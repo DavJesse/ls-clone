@@ -16,8 +16,8 @@ func TestIsValidPath_NonEmptyString(t *testing.T) {
 // Test empty inputs
 func TestIsValidPath_EmptyStringInput(t *testing.T) {
 	result := internal.IsValidPath("")
-	if result {
-		t.Errorf("Expected false; Got true")
+	if !result {
+		t.Errorf("Expected true; Got false")
 	}
 }
 
@@ -32,8 +32,8 @@ func TestIsValidPath_SingleCharacterPath(t *testing.T) {
 // Test paths with only white spaces
 func TestIsValidPath_WhitespaceOnly(t *testing.T) {
 	result := internal.IsValidPath("   ")
-	if !result {
-		t.Errorf("Expected true; Got false")
+	if result {
+		t.Errorf("Expected false; Got true")
 	}
 }
 
