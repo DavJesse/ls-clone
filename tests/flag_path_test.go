@@ -81,3 +81,24 @@ func TestIsValidPath_CaseSensitivePath(t *testing.T) {
 		t.Errorf("Expected true; Got false")
 	}
 }
+
+// Test leasing and trailing whitespaces
+func TestIsValidPath_LeadingAndTrailingWhitespacePath(t *testing.T) {
+	testCases := []struct {
+		input    string
+		expected bool
+	}{
+		{"  path  ", true},
+		{"  ", true},
+		{" ", true},
+		{"\t\n", true},
+		{"", false},
+	}
+
+	for _, tc := range testCases {
+		result := internal.IsValidPath(tc.input)
+		if result != tc.expected {
+			t.Errorf("IsValidPath(%q) = %v; want %v", tc.input, result, tc.expected)
+		}
+	}
+}
