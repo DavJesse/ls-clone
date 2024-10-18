@@ -72,3 +72,12 @@ func TestIsValidPath_NumericOnlyPath(t *testing.T) {
 		t.Errorf("Expected true; Got false")
 	}
 }
+
+// Test case-sensitive paths
+func TestIsValidPath_CaseSensitivePath(t *testing.T) {
+	result1 := internal.IsValidPath("Dir")
+	result2 := internal.IsValidPath("dir")
+	if !result1 || !result2 {
+		t.Errorf("Expected true; Got false")
+	}
+}
