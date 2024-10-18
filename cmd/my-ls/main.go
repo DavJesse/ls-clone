@@ -7,12 +7,13 @@ import (
 )
 
 func main() {
+	var path string
 	args := os.Args[1:]
 
 	if len(args) == 0 {
 
 	} else {
-		path := os.Args[1]
+		path = os.Args[1]
 	}
 
 	files := internal.RetrieveFile(path)
