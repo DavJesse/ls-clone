@@ -61,3 +61,11 @@ func TestIsValid_ValidFlagWithSpaces(t *testing.T) {
 		t.Errorf("Expected false; Got %v", result)
 	}
 }
+
+// Test multiple-hyphens input
+func TestIsValid_MultipleHyphens(t *testing.T) {
+	result := internal.IsValidFlag("--all")
+    if result {
+        t.Errorf("Expected false; Got %v", result)
+    }
+}
