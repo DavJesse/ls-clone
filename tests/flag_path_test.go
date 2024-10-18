@@ -64,3 +64,11 @@ func TestIsValidPath_SpecialCharacterPath(t *testing.T) {
 		t.Errorf("Expected true; Got false")
 	}
 }
+
+// Test paths with only numeric characters
+func TestIsValidPath_NumericOnlyPath(t *testing.T) {
+	result := internal.IsValidPath("1234567890")
+	if !result {
+		t.Errorf("Expected true; Got false")
+	}
+}
