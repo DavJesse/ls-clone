@@ -20,3 +20,11 @@ func TestIsValidFlag_SingleCharacterInput(t *testing.T) {
         t.Errorf("Expected false; Got %v", result)
     }
 }
+
+// Test non-hyphenated input
+func TestIsValidFlag_NoHyphenInput(t *testing.T) {
+	result := internal.IsValidFlag("a")
+    if result != false {
+        t.Errorf("Expected false; Got %v", result)
+    }
+}
