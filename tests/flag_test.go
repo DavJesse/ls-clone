@@ -52,3 +52,12 @@ func TestIsValidFlag_ReapetedValidFlagCharacter(t *testing.T) {
 		t.Errorf("Expected true; Got %v", result)
 	}
 }
+
+// Test valid flag characters with spaces
+func TestIsValid_ValidFlagWithSpaces(t *testing.T) {
+	flag := "- l a"
+	result := internal.IsValidFlag(flag)
+	if result {
+		t.Errorf("Expected false; Got %v", result)
+	}
+}
