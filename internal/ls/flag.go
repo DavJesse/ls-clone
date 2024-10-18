@@ -26,3 +26,10 @@ func IsValidFlag(arg string) bool {
 	}
 	return true
 }
+
+func IsValidPath(arg string) bool {
+	// // A valid path is a non-empty string
+	// return len(arg) > 0
+
+	// for _,
+}
