@@ -1,2 +1,2 @@
 #!/bin/bash
-go run cmd/my-ls/main.go "$1"
+go run cmd/my-ls/main.go "$1" "$2"
