@@ -3,3 +3,18 @@
 //Functions here will retrieve file sizes, permissions, timestamps, etc.
 
 package internal
+
+// import (
+// 	"fmt"
+// 	"log"
+// 	"os"
+// )
+
+// func RetrieveFile(path string) []string {
+
+// 	file, err := os.Open(path)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	fmt.Println(file)
+// }
