@@ -20,3 +20,11 @@ func TestIsValidPath_EmptyStringInput(t *testing.T) {
 		t.Errorf("Expected false; Got true")
 	}
 }
+
+// Test single-character paths
+func TestIsValidPath_SingleCharacterPath(t *testing.T) {
+	result := internal.IsValidPath("a")
+	if !result {
+		t.Errorf("Expected true; Got false")
+	}
+}
