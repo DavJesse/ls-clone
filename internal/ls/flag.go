@@ -5,14 +5,13 @@ package internal
 
 // func SortArgs(args []string) {
 
-
 // }
 
 func IsValidFlag(arg string) bool {
 	// A valid flag is at least two characters long
-if len(arg) < 2 {
-	return false
-}
+	if len(arg) < 2 {
+		return false
+	}
 
 	for i, char := range arg {
 		// Check if flag starts with '-'

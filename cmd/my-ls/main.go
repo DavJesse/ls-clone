@@ -13,7 +13,7 @@ func main() {
 	if len(args) == 0 {
 		path = "."
 	} else {
-		
+
 		path = os.Args[1]
 	}
 

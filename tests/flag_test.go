@@ -16,17 +16,17 @@ func TestIsValidFlag_EmptyString(t *testing.T) {
 // Test single-character input
 func TestIsValidFlag_SingleCharacterInput(t *testing.T) {
 	result := internal.IsValidFlag("l")
-    if result != false {
-        t.Errorf("Expected false; Got %v", result)
-    }
+	if result != false {
+		t.Errorf("Expected false; Got %v", result)
+	}
 }
 
 // Test non-hyphenated input
 func TestIsValidFlag_NoHyphenInput(t *testing.T) {
 	result := internal.IsValidFlag("a")
-    if result != false {
-        t.Errorf("Expected false; Got %v", result)
-    }
+	if result != false {
+		t.Errorf("Expected false; Got %v", result)
+	}
 }
 
 // Test invalid flag character
@@ -65,7 +65,7 @@ func TestIsValid_ValidFlagWithSpaces(t *testing.T) {
 // Test multiple-hyphens input
 func TestIsValid_MultipleHyphens(t *testing.T) {
 	result := internal.IsValidFlag("--all")
-    if result {
-        t.Errorf("Expected false; Got %v", result)
-    }
+	if result {
+		t.Errorf("Expected false; Got %v", result)
+	}
 }
