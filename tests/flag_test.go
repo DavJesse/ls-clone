@@ -40,7 +40,15 @@ func TestIsValidFlag_InvalidFlagCharacter(t *testing.T) {
 // Test valid flag characters
 func TestIsValidFlag_ValidFlagCharacter(t *testing.T) {
 	result := internal.IsValidFlag("-Raltr")
-	if result != true {
-		t.Errorf("Expected false; Got %v", result)
+	if !result {
+		t.Errorf("Expected true; Got %v", result)
+	}
+}
+
+// Test Reapeated Valid Flag Character
+func TestIsValidFlag_ReapetedValidFlagCharacter(t *testing.T) {
+	result := internal.IsValidFlag("-llllll")
+	if !result {
+		t.Errorf("Expected true; Got %v", result)
 	}
 }
