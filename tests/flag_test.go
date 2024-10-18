@@ -36,3 +36,11 @@ func TestIsValidFlag_InvalidFlagCharacter(t *testing.T) {
 		t.Errorf("Expected false; Got %v", result)
 	}
 }
+
+// Test valid flag characters
+func TestIsValidFlag_ValidFlagCharacter(t *testing.T) {
+	result := internal.IsValidFlag("-Raltr")
+	if result != true {
+		t.Errorf("Expected false; Got %v", result)
+	}
+}
