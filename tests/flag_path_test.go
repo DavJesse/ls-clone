@@ -9,6 +9,14 @@ import (
 func TestIsValidPath_NonEmptyString(t *testing.T) {
 	result := internal.IsValidPath("some/path")
 	if !result {
-		t.Errorf("Expected IsValidPath to return true for a non-empty string, but got false")
+		t.Errorf("Expected true; Got false")
+	}
+}
+
+// Test empty inputs
+func TestIsValidPath_EmptyStringInput(t *testing.T) {
+	result := internal.IsValidPath("")
+	if result {
+		t.Errorf("Expected false; Got true")
 	}
 }
