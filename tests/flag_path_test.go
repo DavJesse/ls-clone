@@ -56,3 +56,11 @@ func TestIsValidPath_VeryLongPath(t *testing.T) {
 		t.Errorf("Expected true; Got false")
 	}
 }
+
+// Test special-character-paths
+func TestIsValidPath_SpecialCharacterPath(t *testing.T) {
+	result := internal.IsValidPath("#$%^&*()")
+	if !result {
+		t.Errorf("Expected true; Got false")
+	}
+}
