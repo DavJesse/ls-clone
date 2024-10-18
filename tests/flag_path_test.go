@@ -44,3 +44,15 @@ func TestIsValidPath_UnicodeCharacterPath(t *testing.T) {
 		t.Errorf("Expected true; Got false")
 	}
 }
+
+// Test very long paths
+func TestIsValidPath_VeryLongPath(t *testing.T) {
+	longPath := "a"
+	for i := 0; i < 1000000; i++ {
+		longPath += "a"
+	}
+	result := internal.IsValidPath(longPath)
+	if !result {
+		t.Errorf("Expected true; Got false")
+	}
+}
