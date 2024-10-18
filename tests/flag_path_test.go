@@ -36,3 +36,11 @@ func TestIsValidPath_WhitespaceOnly(t *testing.T) {
 		t.Errorf("Expected true; Got false")
 	}
 }
+
+// Test unicode-character-paths
+func TestIsValidPath_UnicodeCharacterPath(t *testing.T) {
+	result := internal.IsValidPath("こんにちは")
+	if !result {
+		t.Errorf("Expected true; Got false")
+	}
+}
