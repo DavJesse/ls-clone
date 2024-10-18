@@ -28,3 +28,11 @@ func TestIsValidFlag_NoHyphenInput(t *testing.T) {
         t.Errorf("Expected false; Got %v", result)
     }
 }
+
+// Test invalid flag character
+func TestIsValidFlag_InvalidFlagCharacter(t *testing.T) {
+	result := internal.IsValidFlag("-m")
+	if result != false {
+		t.Errorf("Expected false; Got %v", result)
+	}
+}
