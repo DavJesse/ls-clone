@@ -1,4 +1,4 @@
-package internal_test
+package tests
 
 import (
 	internal "my-ls/internal/ls"
