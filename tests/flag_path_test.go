@@ -28,3 +28,11 @@ func TestIsValidPath_SingleCharacterPath(t *testing.T) {
 		t.Errorf("Expected true; Got false")
 	}
 }
+
+// Test paths with only white spaces
+func TestIsValidPath_WhitespaceOnly(t *testing.T) {
+	result := internal.IsValidPath("   ")
+	if !result {
+		t.Errorf("Expected true; Got false")
+	}
+}
