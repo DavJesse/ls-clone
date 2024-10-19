@@ -5,7 +5,6 @@ package internal
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"runtime"
 	"strings"
@@ -126,6 +125,7 @@ func IsValidPath(arg string) (bool, error) {
 		"\033", // ESC
 		"\x1B", // ESC
 		"\x7F", // DEL
+		" ",    // Shitespace
 	}
 	// Check for more illegal characters
 	for i := range invalidChars {
