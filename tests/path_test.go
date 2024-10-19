@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"log"
 	internal "my-ls/internal/ls"
 	"runtime"
 	"testing"
@@ -126,6 +127,49 @@ func TestIsValidPath_LeadingAndTrailingWhitespacePath(t *testing.T) {
 		result, _ := internal.IsValidPath(tc.input)
 		if result != tc.expected {
 			t.Errorf("IsValidPath(%q) = %v; want %v", tc.input, result, tc.expected)
+		}
+	}
+}
+
+// Test handling of current directory
+func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
+	var pointer int
+
+	result := internal.RetrieveFileInfo(".")
+	expect := []string{"flag_test.go", "ls_test.go", "path_test.go", "sort_args_test.go"}
+
+	for pointer < len(result) && pointer < len(expect) {
+		if result[pointer] != expect[pointer] {
+			log.Println(result[pointer])
+			t.Errorf("Expected %v, Got %v", expect, result)
+			t.FailNow()
+		} else {
+			pointer++
+		}
+	}
+
+}
+
+// Test handling of non current directory
+func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
+	var pointer int
+	var expect []string
+	system := runtime.GOOS
+
+	result := internal.RetrieveFileInfo("..\\")
+	if system == "windows" {
+		expect = []string{"LICENSE", "README.md", "cmd\\", "commit.sh", "go.mod", "internal\\", "push_both.sh", "run_my_ls.sh", "tests\\"}
+	} else {
+		expect = []string{"LICENSE", "README.md", "cmd/", "commit.sh", "go.mod", "internal/", "push_both.sh", "run_my_ls.sh", "tests/"}
+	}
+
+	for pointer < len(result) && pointer < len(expect) {
+		if result[pointer] != expect[pointer] {
+			log.Println(result[pointer])
+			t.Errorf("Expected %v, Got %v", expect[pointer], result[pointer])
+			t.FailNow()
+		} else {
+			pointer++
 		}
 	}
 }
