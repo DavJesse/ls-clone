@@ -68,9 +68,9 @@ func TestSortArgs_TwoArgument(t *testing.T) {
 		Path  string
 		Err   bool
 	}{
-		{[]string{"-lRa", "directory\\file"}, "-lRa", "directory\\file", true},
+		{[]string{"-lRa", "directory/file"}, "-lRa", "directory\\file", true},
 		{[]string{"directory\\file", "-lRa"}, "", "", false},
-		{[]string{"-lRa", "directory/file"}, "", "", false},
+		{[]string{"-lRa", "directory\\file"}, "", "", false},
 	}
 
 	for _, tc := range testCases {
@@ -95,5 +95,23 @@ func TestSortArgs_TwoArgument(t *testing.T) {
 			}
 		}
 
+	}
+}
+
+// Test more than two arguments
+func TestSortArgs_ExcessiveArguments(t *testing.T) {
+	flag, path, err := internal.SortArgs([]string{"-m", "directory/file", "-l"})
+	if flag != "" || path != "" || err == nil {
+		if flag != "" {
+			t.Errorf("Expected: '', Got: '%v'", flag)
+		}
+
+		if path != "" {
+			t.Errorf("Expected: '', Got: '%v'", path)
+		}
+
+		if err == nil {
+			t.Errorf("Expected: \"error\", Got: %v", err)
+		}
 	}
 }
