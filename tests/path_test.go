@@ -150,7 +150,7 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 
 }
 
-// Test handling of current directory
+// Test handling of non current directory
 func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 	var pointer int
 	var expect []string
@@ -172,5 +172,4 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 			pointer++
 		}
 	}
-
 }
