@@ -17,7 +17,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	files, err := internal.RetrieveFileInfo(path)
+	fmt.Println(args)
+	files := internal.RetrieveFileInfo(path)
 	fmt.Println(files)
 	fmt.Println(flag)
 }
