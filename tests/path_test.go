@@ -158,9 +158,9 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 
 	result := internal.RetrieveFileInfo("..\\")
 	if system == "windows" {
-		expect = []string{".git\\", "LICENSE", "README.md", "cmd\\", "commit.sh", "go.mod", "internal\\", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests\\"}
+		expect = []string{".git\\", "LICENSE", "README.md", "cmd\\", "commit.sh", "go.mod", "internal\\", "push_both.sh", "run_my_ls.sh", "tests\\"}
 	} else {
-		expect = []string{".git/", "LICENSE", "README.md", "cmd/", "commit.sh", "go.mod", "internal/", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests/"}
+		expect = []string{".git/", "LICENSE", "README.md", "cmd/", "commit.sh", "go.mod", "internal/", "push_both.sh", "run_my_ls.sh", "tests/"}
 	}
 
 	for pointer < len(result) && pointer < len(expect) {
