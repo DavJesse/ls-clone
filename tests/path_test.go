@@ -149,3 +149,28 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 	}
 
 }
+
+// Test handling of current directory
+func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
+	var pointer int
+	var expect []string
+	system := runtime.GOOS
+
+	result := internal.RetrieveFileInfo("..\\")
+	if system == "windows" {
+		expect = []string{".\\git", "LICENSE", "README.md", "cmd\\", "commit.sh", "go.mod", "internal\\", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests\\"}
+	} else {
+		expect = []string{".git/", "LICENSE", "README.md", "cmd/", "commit.sh", "go.mod", "internal/", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests/"}
+	}
+
+	for pointer < len(result) && pointer < len(expect) {
+		if result[pointer] != expect[pointer] {
+			log.Println(result[pointer])
+			t.Errorf("Expected %v, Got %v", expect[pointer], result[pointer])
+			t.FailNow()
+		} else {
+			pointer++
+		}
+	}
+
+}
