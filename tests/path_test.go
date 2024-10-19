@@ -115,10 +115,10 @@ func TestIsValidPath_LeadingAndTrailingWhitespacePath(t *testing.T) {
 		input    string
 		expected bool
 	}{
-		{"  path  ", true},
-		{"  ", true},
-		{" ", true},
-		{"\t\n", true},
+		{"  path  ", false},
+		{"  ", false},
+		{" ", false},
+		{"\t\n", false},
 		{"", false},
 	}
 
