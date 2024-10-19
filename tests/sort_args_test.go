@@ -41,3 +41,21 @@ func TestSortArgs_OneValidArgument(t *testing.T) {
 		}
 	}
 }
+
+// Test for invalid one-argument inputs
+func TestSortArgs_OneInValidArgument(t *testing.T) {
+	flag, path, err := internal.SortArgs([]string{"-m"})
+	if flag != "" || path != "" || err == nil {
+		if flag != "" {
+			t.Errorf("Expected: '', Got: '%v'", flag)
+		}
+
+		if path != "" {
+			t.Errorf("Expected: '', Got: '%v'", path)
+		}
+
+		if err == nil {
+			t.Errorf("Expected: \"illegal character: leading '-'\", Got: %#v", err)
+		}
+	}
+}
