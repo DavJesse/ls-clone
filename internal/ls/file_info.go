@@ -4,17 +4,42 @@
 
 package internal
 
-// import (
-// 	"fmt"
-// 	"log"
-// 	"os"
-// )
+import (
+	"log"
+	"os"
+	"runtime"
+)
 
-// func RetrieveFile(path string) []string {
+func RetrieveFileInfo(path string) []string {
+	var fileList []string
 
-// 	file, err := os.Open(path)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	fmt.Println(file)
-// }
+	// Open directory/file for reading
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	entries, err := file.Readdir(-1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Retrieve directory/file name and append to fileList
+	// For directories, we add '/' or '\' depending on opperating system
+	for _, entry := range entries {
+
+		if entry.IsDir() {
+			system := runtime.GOOS
+			if system == "windows" {
+				fileList = append(fileList, entry.Name()+"\\")
+			} else {
+				fileList = append(fileList, entry.Name()+"/")
+			}
+		} else {
+			fileList = append(fileList, entry.Name())
+		}
+	}
+
+	return fileList
+}
