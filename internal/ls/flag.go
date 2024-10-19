@@ -4,6 +4,7 @@
 package internal
 
 import (
+	"log"
 	"runtime"
 	"strings"
 )
@@ -34,12 +35,13 @@ func IsValidFlag(arg string) bool {
 
 func IsValidPath(arg string) bool {
 	// A valid path is a non-empty string
-	if len(arg) > 0 {
+	if len(arg) == 0 {
 		return false
 	}
 
 	// Check for problematic leading / trailing characters
 	if strings.HasPrefix(arg, "-") {
+		log.Println("Leading '-'")
 		return false
 	}
 
@@ -47,13 +49,14 @@ func IsValidPath(arg string) bool {
 	system := runtime.GOOS
 	if system == "windows" {
 		illegalSep := "/"
-
 		if strings.Contains(arg, illegalSep) {
+			log.Println("String contains '/'")
 			return false
 		}
 	} else {
 		illegalSep := "\\"
 		if strings.Contains(arg, illegalSep) {
+			log.Println("String contains '\\'")
 			return false
 		}
 	}
@@ -96,6 +99,7 @@ func IsValidPath(arg string) bool {
 	// Check for illegal characters
 	for i := range invalidChars {
 		if strings.Contains(arg, invalidChars[i]) {
+			log.Println("String contains invalid characters 1")
 			return false
 		}
 	}
@@ -104,6 +108,7 @@ func IsValidPath(arg string) bool {
 	// Check for more illegal characters
 	for i := range invalidChars {
 		if strings.Contains(arg, invalidChars[i]) {
+			log.Println("String contains invalid characters 2")
 			return false
 		}
 	}
