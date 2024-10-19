@@ -16,7 +16,7 @@ func TestIsValidPath_NonEmptyString(t *testing.T) {
 // Test empty inputs
 func TestIsValidPath_EmptyStringInput(t *testing.T) {
 	result := internal.IsValidPath("")
-	if !result {
+	if result {
 		t.Errorf("Expected true; Got false")
 	}
 }

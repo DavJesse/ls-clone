@@ -47,6 +47,7 @@ func IsValidPath(arg string) bool {
 
 	// Identify illegal character based on operrating system
 	system := runtime.GOOS
+	log.Println("system: ", system)
 	if system == "windows" {
 		illegalSep := "/"
 		if strings.Contains(arg, illegalSep) {
