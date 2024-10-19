@@ -4,6 +4,8 @@
 package internal
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"runtime"
 	"strings"
@@ -13,52 +15,63 @@ import (
 
 // }
 
-func IsValidFlag(arg string) bool {
+func IsValidFlag(arg string) (bool, error) {
+	var err error
+
 	// A valid flag is at least two characters long
 	if len(arg) < 2 {
-		return false
+		err = errors.New("flag is empty")
+		return false, err
 	}
 
 	for i, char := range arg {
 		// Check if flag starts with '-'
 		if i == 0 && char != '-' {
-			return false
+			err = errors.New("illegal character: flag has a leading '-'")
+			return false, err
 		}
 
 		// Check for non-valid flag characters after '-
 		if i != 0 && !(char == 'R' || char == 'l' || char == 'a' || char == 't' || char == 'r') {
-			return false
+			err = errors.New("illegal character: flag has invalid character(s)")
+			return false, err
 		}
 	}
-	return true
+	return true, err
 }
 
-func IsValidPath(arg string) bool {
+func IsValidPath(arg string) (bool, error) {
+	var err error
 	// A valid path is a non-empty string
 	if len(arg) == 0 {
-		return false
+		err = errors.New("path is empty")
+		return false, err
 	}
 
 	// Check for problematic leading / trailing characters
 	if strings.HasPrefix(arg, "-") {
-		log.Println("Leading '-'")
-		return false
+		err = errors.New("illegal character: leading '-'")
+		return false, err
 	}
 
 	// Identify illegal character based on operrating system
 	system := runtime.GOOS
 	log.Println("system: ", system)
 	if system == "windows" {
-		illegalSep := "/"
-		if strings.Contains(arg, illegalSep) {
-			log.Println("String contains '/'")
-			return false
+		illegalChars := []string{"<", ">", ":", "\"", "/", "|", "?", "*"}
+
+		// Check for illegal characters
+		for i := range illegalChars {
+			if strings.Contains(arg, illegalChars[i]) {
+				err = errors.New("illegal character: path contains " + illegalChars[i])
+				return false, err
+			}
 		}
 	} else {
 		illegalSep := "\\"
 		if strings.Contains(arg, illegalSep) {
-			log.Println("String contains '\\'")
-			return false
+			err = errors.New("illegal character: path contains '\\'")
+			return false, err
 		}
 	}
 
@@ -100,8 +113,8 @@ func IsValidPath(arg string) bool {
 	// Check for illegal characters
 	for i := range invalidChars {
 		if strings.Contains(arg, invalidChars[i]) {
-			log.Println("String contains invalid characters 1")
-			return false
+			err = errors.New("illegal character: path contains " + invalidChars[i])
+			return false, err
 		}
 	}
 
@@ -117,9 +130,9 @@ func IsValidPath(arg string) bool {
 	// Check for more illegal characters
 	for i := range invalidChars {
 		if strings.Contains(arg, invalidChars[i]) {
-			log.Println("String contains invalid characters 2")
-			return false
+			err = errors.New("illegal character: path contains " + invalidChars[i])
+			return false, err
 		}
 	}
-	return true
+	return true, err
 }
