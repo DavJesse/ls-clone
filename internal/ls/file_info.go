@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"sort"
+	"strings"
 )
 
 func RetrieveFileInfo(path string) []string {
@@ -28,6 +30,10 @@ func RetrieveFileInfo(path string) []string {
 	// Retrieve directory/file name and append to fileList
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
+		// ignore git directories
+		if strings.Contains(entry.Name(), ".git") {
+			continue
+		}
 
 		if entry.IsDir() {
 			system := runtime.GOOS
@@ -40,6 +46,10 @@ func RetrieveFileInfo(path string) []string {
 			fileList = append(fileList, entry.Name())
 		}
 	}
+
+	// Sort files and directories lexicographically
+	// Case sensitivity is taken in cosideration, as ls does
+	sort.Strings(fileList)
 
 	return fileList
 }
