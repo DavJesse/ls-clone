@@ -2,21 +2,23 @@ package main
 
 import (
 	"fmt"
+	"log"
 	internal "my-ls/internal/ls"
 	"os"
 )
 
 func main() {
-	var path string
-	args := os.Args[1:]
+	args := os.Args[1:] // Retrieve arguments from command line
 
-	if len(args) == 0 {
-		path = "."
-	} else {
-
-		path = os.Args[1]
+	// Extract flags and paths from user arguments
+	// Handle errors, if encountered
+	flag, path, err := internal.SortArgs(args)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	files := internal.RetrieveFile(path)
+	fmt.Println(args)
+	files := internal.RetrieveFileInfo(path)
 	fmt.Println(files)
+	fmt.Println(flag)
 }
