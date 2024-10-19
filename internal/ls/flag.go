@@ -10,9 +10,74 @@ import (
 	"strings"
 )
 
-// func SortArgs(args []string) {
+// Assigns arguments as valid flags and path
+func SortArgs(args []string) (string, string, error) {
+	var flag, path string
+	var err error
+	var valid bool
 
-// }
+	// Set path to current directory if no arguments are given
+	// For one argument, validate their status as a flag, then as a path
+	// If two arguments, validate order and status as flags or paths
+	if len(args) == 0 {
+		path = "."
+
+		return flag, path, err
+	} else if len(args) == 1 {
+		// Validate argument as flag
+		// Valid flags start with a hyphen
+		if strings.HasPrefix(args[0], "-") {
+			valid, err = IsValidFlag(args[0])
+			if valid {
+				flag = args[0]
+				path = "." // Set path to current directory
+
+				return flag, path, err
+			} else {
+				return flag, path, err
+			}
+
+			// Validate argument as a path
+		} else {
+			valid, err = IsValidPath(args[0])
+			if valid {
+				path = args[0]
+
+				return flag, path, err
+			} else {
+				return flag, path, err
+			}
+		}
+	} else if len(args) == 2 {
+		if strings.HasPrefix(args[0], "-") {
+			// Validate first agument as a flag
+			valid, err = IsValidFlag(args[0])
+			if valid {
+				flag = args[0]
+			} else {
+				return flag, path, err
+			}
+
+			// Validate second argument as a path
+			valid, err = IsValidPath(args[1])
+			if valid {
+				path = args[1]
+			} else {
+				return "", path, err
+			}
+			return flag, path, err
+		}
+
+		// Check for invalid argument formats
+		if strings.HasPrefix(args[1], "-") {
+			err = errors.New("invalid format: check argument arrangement\nwe recommend: ./run_my_ls.sh [valid flag] [valid path]")
+			return flag, path, err
+		}
+	}
+
+	err = errors.New("too many arguments")
+	return flag, path, err
+}
 
 func IsValidFlag(arg string) (bool, error) {
 	var err error
