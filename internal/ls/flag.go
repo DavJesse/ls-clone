@@ -105,7 +105,15 @@ func IsValidPath(arg string) bool {
 		}
 	}
 
-	invalidChars = []string{"\n", "\t", "\b", "\r", "\033", "\x1B", "\x7F", " ", "&", ";", "#", "!", "~"}
+	invalidChars = []string{
+		"\n",   // Newline
+		"\t",   // Tab
+		"\b",   // Backspace
+		"\r",   // Carriage Return
+		"\033", // ESC
+		"\x1B", // ESC
+		"\x7F", // DEL
+	}
 	// Check for more illegal characters
 	for i := range invalidChars {
 		if strings.Contains(arg, invalidChars[i]) {
