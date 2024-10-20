@@ -17,6 +17,9 @@ func SortArgs(args []string) (string, string, error) {
 	var err error
 	var valid bool
 
+	// Clean arguments, trim empty strings
+	args = CleanArgs(args)
+
 	// Set path to current directory if no arguments are given
 	// For one argument, validate their status as a flag, then as a path
 	// If two arguments, validate order and status as flags or paths
