@@ -48,8 +48,10 @@ func RetrieveFileInfo(path string) []string {
 	}
 
 	// Sort files and directories lexicographically
-	// Case sensitivity is taken in cosideration, as ls does
-	sort.Strings(fileList)
+	// Case sensitivity is NOT taken in cosideration, as ls does
+	sort.Slice(fileList, func(i, j int) bool {
+		return strings.ToLower(fileList[i]) < strings.ToLower(fileList[j])
+	})
 
 	return fileList
 }
