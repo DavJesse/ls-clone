@@ -203,9 +203,11 @@ func IsValidPath(arg string) (bool, error) {
 	return true, err
 }
 
+// Cleans arguments, removing empty strings
 func CleanArgs(args []string) []string {
 	var result []string
 
+	// Only append non-empty strings
 	for i := range args {
 		if args[i] != "" {
 			result = append(result, args[i])
