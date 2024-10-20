@@ -173,3 +173,27 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 		}
 	}
 }
+
+// test only empty string inputs and one populated slot on indices 0 or 1
+func TestCleanArgs(t *testing.T) {
+	testCases := []struct {
+		input  []string
+		expect []string
+	}{
+		{[]string{"", "", ""}, nil},
+		{[]string{"-l", ""}, []string{"-l"}},
+		{[]string{"", "."}, []string{"."}},
+	}
+
+	for _, tc := range testCases {
+		var pointer int
+		output := internal.CleanArgs(tc.input)
+		for pointer < len(output) && pointer < len(tc.expect) {
+			if output[pointer] != tc.expect[pointer] {
+				t.Errorf("Expected %v, Got %v", tc.expect[pointer], output[pointer])
+				t.FailNow()
+			}
+			pointer++
+		}
+	}
+}
