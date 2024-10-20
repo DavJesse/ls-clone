@@ -154,13 +154,15 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 	var pointer int
 	var expect []string
+	var result []string
 	system := runtime.GOOS
 
-	result := internal.RetrieveFileInfo("..\\")
 	if system == "windows" {
-		expect = []string{"LICENSE", "README.md", "cmd\\", "commit.sh", "go.mod", "internal\\", "push_both.sh", "run_my_ls.sh", "tests\\"}
+		result = internal.RetrieveFileInfo("..\\")
+		expect = []string{"cmd\\", "commit.sh", "go.mod", "internal\\", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests\\"}
 	} else {
-		expect = []string{"LICENSE", "README.md", "cmd/", "commit.sh", "go.mod", "internal/", "push_both.sh", "run_my_ls.sh", "tests/"}
+		result = internal.RetrieveFileInfo("../")
+		expect = []string{"cmd/", "commit.sh", "go.mod", "internal/", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests/"}
 	}
 
 	for pointer < len(result) && pointer < len(expect) {
