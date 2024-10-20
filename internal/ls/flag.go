@@ -5,14 +5,12 @@ package internal
 
 import (
 	"errors"
-	"log"
 	"runtime"
 	"strings"
 )
 
 // Assigns arguments as valid flags and path
 func SortArgs(args []string) (string, string, error) {
-
 	var flag, path string
 	var err error
 	var valid bool
@@ -124,7 +122,6 @@ func IsValidPath(arg string) (bool, error) {
 
 	// Identify illegal character based on operrating system
 	system := runtime.GOOS
-	log.Println("system: ", system)
 	if system == "windows" {
 		illegalChars := []string{"<", ">", ":", "\"", "/", "|", "?", "*"}
 
