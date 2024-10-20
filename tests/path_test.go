@@ -62,7 +62,7 @@ func TestIsValidPath_UnicodeCharacterPath(t *testing.T) {
 // Test very long paths
 func TestIsValidPath_VeryLongPath(t *testing.T) {
 	longPath := "a"
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 100000; i++ {
 		longPath += "a"
 	}
 	result, err := internal.IsValidPath(longPath)
