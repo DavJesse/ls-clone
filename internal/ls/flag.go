@@ -12,6 +12,7 @@ import (
 
 // Assigns arguments as valid flags and path
 func SortArgs(args []string) (string, string, error) {
+
 	var flag, path string
 	var err error
 	var valid bool
@@ -200,4 +201,15 @@ func IsValidPath(arg string) (bool, error) {
 		}
 	}
 	return true, err
+}
+
+func CleanArgs(args []string) []string {
+	var result []string
+
+	for i := range args {
+		if args[i] != "" {
+			result = append(result, args[i])
+		}
+	}
+	return result
 }
