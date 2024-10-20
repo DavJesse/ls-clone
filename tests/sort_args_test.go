@@ -2,6 +2,7 @@ package tests
 
 import (
 	internal "my-ls/internal/ls"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -62,15 +63,29 @@ func TestSortArgs_OneInValidArgument(t *testing.T) {
 
 // Test valid two-argument input
 func TestSortArgs_TwoArgument(t *testing.T) {
-	testCases := []struct {
+	system := runtime.GOOS
+	type result struct {
 		Input []string
 		Flag  string
 		Path  string
 		Err   bool
-	}{
-		{[]string{"-lRa", "directory/file"}, "-lRa", "directory\\file", true},
-		{[]string{"directory\\file", "-lRa"}, "", "", false},
-		{[]string{"-lRa", "directory\\file"}, "", "", false},
+	}
+
+	testCases := []result{}
+
+	// Issue expected results based on operating system
+	if system == "windows" {
+		testCases = []result{
+			{[]string{"-lRa", "directory\\file"}, "-lRa", "directory\\file", true},
+			{[]string{"directory\\file", "-lRa"}, "", "", false},
+			{[]string{"-lRa", "directory/file"}, "", "", false},
+		}
+	} else {
+		testCases = []result{
+			{[]string{"-lRa", "directory/file"}, "-lRa", "directory/file", true},
+			{[]string{"directory/file", "-lRa"}, "", "", false},
+			{[]string{"-lRa", "directory\\file"}, "", "", false},
+		}
 	}
 
 	for _, tc := range testCases {
@@ -81,6 +96,8 @@ func TestSortArgs_TwoArgument(t *testing.T) {
 		} else {
 			errStatus = false
 		}
+
+		// Compare flag, path, and error outputs
 		if flag != tc.Flag || path != tc.Path || errStatus != tc.Err {
 			if flag != tc.Flag {
 				t.Errorf("Expected: %#v, Got: %#v", tc.Flag, flag)

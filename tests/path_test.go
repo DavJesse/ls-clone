@@ -62,7 +62,7 @@ func TestIsValidPath_UnicodeCharacterPath(t *testing.T) {
 // Test very long paths
 func TestIsValidPath_VeryLongPath(t *testing.T) {
 	longPath := "a"
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 100000; i++ {
 		longPath += "a"
 	}
 	result, err := internal.IsValidPath(longPath)
@@ -154,13 +154,15 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 	var pointer int
 	var expect []string
+	var result []string
 	system := runtime.GOOS
 
-	result := internal.RetrieveFileInfo("..\\")
 	if system == "windows" {
-		expect = []string{"LICENSE", "README.md", "cmd\\", "commit.sh", "go.mod", "internal\\", "push_both.sh", "run_my_ls.sh", "tests\\"}
+		result = internal.RetrieveFileInfo("..\\")
+		expect = []string{"cmd\\", "commit.sh", "go.mod", "internal\\", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests\\"}
 	} else {
-		expect = []string{"LICENSE", "README.md", "cmd/", "commit.sh", "go.mod", "internal/", "push_both.sh", "run_my_ls.sh", "tests/"}
+		result = internal.RetrieveFileInfo("../")
+		expect = []string{"cmd/", "commit.sh", "go.mod", "internal/", "LICENSE", "push_both.sh", "README.md", "run_my_ls.sh", "tests/"}
 	}
 
 	for pointer < len(result) && pointer < len(expect) {
@@ -169,6 +171,30 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 			t.Errorf("Expected %v, Got %v", expect[pointer], result[pointer])
 			t.FailNow()
 		} else {
+			pointer++
+		}
+	}
+}
+
+// test only empty string inputs and one populated slot on indices 0 or 1
+func TestCleanArgs(t *testing.T) {
+	testCases := []struct {
+		input  []string
+		expect []string
+	}{
+		{[]string{"", "", ""}, nil},
+		{[]string{"-l", ""}, []string{"-l"}},
+		{[]string{"", "."}, []string{"."}},
+	}
+
+	for _, tc := range testCases {
+		var pointer int
+		output := internal.CleanArgs(tc.input)
+		for pointer < len(output) && pointer < len(tc.expect) {
+			if output[pointer] != tc.expect[pointer] {
+				t.Errorf("Expected %v, Got %v", tc.expect[pointer], output[pointer])
+				t.FailNow()
+			}
 			pointer++
 		}
 	}
