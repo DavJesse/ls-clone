@@ -3,6 +3,7 @@ package tests
 import (
 	"log"
 	internal "my-ls/internal/ls"
+	"os"
 	"runtime"
 	"testing"
 )
@@ -197,5 +198,26 @@ func TestCleanArgs(t *testing.T) {
 			}
 			pointer++
 		}
+	}
+}
+
+// Test file input
+func TestRetrieveHardLinkCount_FileInput(t *testing.T) {
+	// Create a temporary file
+	tmpfile, err := os.CreateTemp("", "testfile")
+	if err != nil {
+		t.Fatalf("Failed to create temporary file: %v", err)
+	}
+	defer os.Remove(tmpfile.Name())
+
+	// Get the hard link count
+	count, err := internal.RetrieveHardLinkCount(tmpfile.Name())
+	if err != nil {
+		t.Fatalf("RetrieveHardLinkCount failed: %v", err)
+	}
+
+	// Check if the count is 1 (as a regular file typically has 1 hard link)
+	if count != 1 {
+		t.Errorf("Expected hard link count of 1, got %d", count)
 	}
 }
