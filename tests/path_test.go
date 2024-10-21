@@ -221,3 +221,25 @@ func TestRetrieveHardLinkCount_FileInput(t *testing.T) {
 		t.Errorf("Expected hard link count of 1, got %d", count)
 	}
 }
+
+func TestRetrieveHardLinkCount_DirInput(t *testing.T) {
+	// Create a temporary directory
+	tempDir, err := os.MkdirTemp("", "testdir")
+	if err != nil {
+		t.Fatalf("Failed to create temporary directory: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Get the hard link count
+	count, err := internal.RetrieveHardLinkCount(tempDir)
+	if err != nil {
+		t.Fatalf("RetrieveHardLinkCount failed: %v", err)
+	}
+
+	// On most systems, a new directory should have 2 hard links
+	// (one for "." and one for its entry in the parent directory)
+	expectedCount := 2
+	if count != expectedCount {
+		t.Errorf("Expected hard link count of %d, but got %d", expectedCount, count)
+	}
+}
