@@ -5,11 +5,13 @@
 package internal
 
 import (
+	"errors"
 	"log"
 	"os"
 	"runtime"
 	"sort"
 	"strings"
+	"syscall"
 )
 
 func RetrieveFileInfo(path string) []FileInfo {
@@ -68,4 +70,21 @@ func RetrieveFileInfo(path string) []FileInfo {
 	})
 
 	return fileList
+}
+
+func RetrieveHardLinkCount(path string) (int, error) {
+
+	info, err := os.Lstat(path)
+	if err != nil {
+		return 0, err
+	}
+
+	stat, ok := info.Sys().(*syscall.Stat_t)
+	if !ok {
+		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
+		return 0, err
+	}
+	hardLinks := stat.Nlink
+
+	return hardLinks, err
 }
