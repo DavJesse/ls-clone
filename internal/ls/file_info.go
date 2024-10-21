@@ -5,6 +5,7 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"runtime"
@@ -38,12 +39,14 @@ func RetrieveFileInfo(path string) []string {
 		if entry.IsDir() {
 			system := runtime.GOOS
 			if system == "windows" {
-				fileList = append(fileList, entry.Name()+"\\")
+				fmt.Println("Sys directory", entry.Sys())
+				fileList = append(fileList, entry.Name()+"\\"+"\n")
 			} else {
-				fileList = append(fileList, entry.Name()+"/")
+				fmt.Println("Sys file", entry.Sys())
+				fileList = append(fileList, entry.Name()+"/"+"\n")
 			}
 		} else {
-			fileList = append(fileList, entry.Name())
+			fileList = append(fileList, entry.Name()+"\n")
 		}
 	}
 
