@@ -278,3 +278,32 @@ func TestRetrieveHardLinkCount_SymbolicLink(t *testing.T) {
 		t.Errorf("Expected 1 hard link for symbolic link, got %d", count)
 	}
 }
+
+// Test Handling of multiple links
+func TestRetrieveHardLinkCount_MultipleLinks(t *testing.T) {
+	// Create a temporary file
+	tmpfile, err := os.CreateTemp("", "testfile")
+	if err != nil {
+		t.Fatalf("Failed to create temporary file: %v", err)
+	}
+	defer os.Remove(tmpfile.Name())
+
+	// Create a hard link to the temporary file
+	hardlinkPath := tmpfile.Name() + "_hardlink"
+	err = os.Link(tmpfile.Name(), hardlinkPath)
+	if err != nil {
+		t.Fatalf("Failed to create hard link: %v", err)
+	}
+	defer os.Remove(hardlinkPath)
+
+	// Test RetrieveHardLinkCount
+	count, err := internal.RetrieveHardLinkCount(tmpfile.Name())
+	if err != nil {
+		t.Fatalf("RetrieveHardLinkCount failed: %v", err)
+	}
+
+	expectedCount := 2 // Original file + 1 hard link
+	if count != expectedCount {
+		t.Errorf("Expected hard link count to be %d, but got %d", expectedCount, count)
+	}
+}
