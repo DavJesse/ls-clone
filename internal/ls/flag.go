@@ -5,7 +5,6 @@ package internal
 
 import (
 	"errors"
-	"log"
 	"runtime"
 	"strings"
 )
@@ -15,6 +14,9 @@ func SortArgs(args []string) (string, string, error) {
 	var flag, path string
 	var err error
 	var valid bool
+
+	// Clean arguments, trim empty strings
+	args = CleanArgs(args)
 
 	// Set path to current directory if no arguments are given
 	// For one argument, validate their status as a flag, then as a path
@@ -120,7 +122,6 @@ func IsValidPath(arg string) (bool, error) {
 
 	// Identify illegal character based on operrating system
 	system := runtime.GOOS
-	log.Println("system: ", system)
 	if system == "windows" {
 		illegalChars := []string{"<", ">", ":", "\"", "/", "|", "?", "*"}
 
@@ -200,4 +201,17 @@ func IsValidPath(arg string) (bool, error) {
 		}
 	}
 	return true, err
+}
+
+// Cleans arguments, removing empty strings
+func CleanArgs(args []string) []string {
+	var result []string
+
+	// Only append non-empty strings
+	for i := range args {
+		if args[i] != "" {
+			result = append(result, args[i])
+		}
+	}
+	return result
 }
