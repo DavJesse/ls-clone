@@ -4,6 +4,7 @@ import (
 	"log"
 	internal "my-ls/internal/ls"
 	"os"
+	"path/filepath"
 	"runtime"
 	"testing"
 )
@@ -222,6 +223,7 @@ func TestRetrieveHardLinkCount_FileInput(t *testing.T) {
 	}
 }
 
+// Test directory input
 func TestRetrieveHardLinkCount_DirInput(t *testing.T) {
 	// Create a temporary directory
 	tempDir, err := os.MkdirTemp("", "testdir")
@@ -241,5 +243,38 @@ func TestRetrieveHardLinkCount_DirInput(t *testing.T) {
 	expectedCount := 2
 	if count != expectedCount {
 		t.Errorf("Expected hard link count of %d, but got %d", expectedCount, count)
+	}
+}
+
+// Test Symbolic link handling
+func TestRetrieveHardLinkCount_SymbolicLink(t *testing.T) {
+	// Create a temporary directory
+	tempDir, err := os.MkdirTemp("", "test")
+	if err != nil {
+		t.Fatalf("Failed to create temp directory: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Create a file
+	filePath := filepath.Join(tempDir, "testfile.txt")
+	if err := os.WriteFile(filePath, []byte("test content"), 0644); err != nil {
+		t.Fatalf("Failed to create test file: %v", err)
+	}
+
+	// Create a symbolic link to the file
+	linkPath := filepath.Join(tempDir, "testlink")
+	if err := os.Symlink(filePath, linkPath); err != nil {
+		t.Fatalf("Failed to create symbolic link: %v", err)
+	}
+
+	// Test RetrieveHardLinkCount on the symbolic link
+	count, err := internal.RetrieveHardLinkCount(linkPath)
+	if err != nil {
+		t.Fatalf("RetrieveHardLinkCount failed: %v", err)
+	}
+
+	// The symbolic link itself should have 1 hard link
+	if count != 1 {
+		t.Errorf("Expected 1 hard link for symbolic link, got %d", count)
 	}
 }
