@@ -72,7 +72,7 @@ func RetrieveFileInfo(path string) []FileInfo {
 	return fileList
 }
 
-func RetrieveHardLinkCount(path string) (int, error) {
+func RetrieveHardLinkCount(path string) (uint64, error) {
 
 	info, err := os.Lstat(path)
 	if err != nil {
