@@ -1,7 +1,6 @@
-//This file will contain the logic for retrieving file and directory metadata.
+// This file will contain the logic for retrieving file and directory metadata.
 // It uses Go’s os and syscall packages (since the os/exec package is not allowed).
-//Functions here will retrieve file sizes, permissions, timestamps, etc.
-
+// Functions here will retrieve file sizes, permissions, timestamps, etc.
 package internal
 
 import (
@@ -10,12 +9,15 @@ import (
 	"os"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"syscall"
 )
 
-func RetrieveFileInfo(path string) []FileInfo {
-	var fileList []FileInfo
+func RetrieveFileInfo(path string) FileInfo {
+	var fileList FileInfo
+	var linkCount string
+	system := runtime.GOOS
 
 	// Open directory/file for reading
 	file, err := os.Open(path)
@@ -32,48 +34,61 @@ func RetrieveFileInfo(path string) []FileInfo {
 	// Retrieve directory/file name and append to fileList
 	// For directories, we add '/' or '\' depending on opperating system
 	for i, entry := range entries {
+		if system != "windows" {
+			hardLinks, err := RetrieveHardLinkCount(path + "/" + entry.Name())
+			if err != nil {
+				log.Fatal(err)
+			}
+			linkCount = strconv.Itoa(int(hardLinks))
+		}
 		// ignore git directories
 		if strings.Contains(entry.Name(), ".git") {
 			continue
 		}
 
 		if entry.IsDir() {
-			system := runtime.GOOS
 			// Append result for windows systems
 			// Wrap text in bright blue
 			if system == "windows" {
 				if i != len(entries)-1 {
-					fileList[i].DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "\\" + " "
-					fileList[i].DetailedList += entry.Mode().Perm().String() + "\033[01;34m" + entry.Name() + "\033[0m" + "\\" + " "
+					fileList.DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "\\" + " "
+					fileList.DetailedList += entry.Mode().Perm().String() + " " + "not available" + " " + "\033[01;34m" + entry.Name() + "\\\n"
 				} else {
-					fileList[i].DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
+					fileList.DetailedList += entry.Mode().Perm().String() + " " + "not available" + " " + "\033[01;34m" + entry.Name() + "\\\n"
+					fileList.DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
 				}
 
 				// Append result for other systems
 			} else {
-
 				if i != len(entries)-1 {
-					fileList[i].DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "/" + " "
+					fileList.DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "/" + " "
+					fileList.DetailedList += entry.Mode().Perm().String() + " " + linkCount + " " + "\033[01;34m" + entry.Name() + "/\n"
 				} else {
-					fileList[i].DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "/"
+					fileList.DefaultList += "\033[01;34m" + entry.Name() + "\033[0m" + "/"
+					fileList.DetailedList += entry.Mode().Perm().String() + " " + linkCount + " " + "\033[01;34m" + entry.Name() + "/\n"
 				}
 			}
+
+			// Append result for file types
 		} else {
-			fileList[i].DefaultList += entry.Name()
+			fileList.DefaultList += entry.Name()
+			fileList.DetailedList += entry.Mode().Perm().String() + " " + linkCount + " " + entry.Name() + "\n"
 		}
 	}
 
 	// Sort files and directories lexicographically
 	// Case sensitivity is NOT taken in cosideration, as ls does
-	sort.Slice(fileList, func(i, j int) bool {
-		return strings.ToLower(fileList[i].DefaultList) < strings.ToLower(fileList[j].DefaultList)
+	fileSlc := strings.Fields(fileList.DefaultList)
+	sort.Slice(fileSlc, func(i, j int) bool {
+		return strings.ToLower(fileSlc[i]) < strings.ToLower(fileSlc[j])
 	})
+
+	fileList.DefaultList = strings.Join(fileSlc, " ")
 
 	return fileList
 }
 
 func RetrieveHardLinkCount(path string) (uint64, error) {
-
 	info, err := os.Lstat(path)
 	if err != nil {
 		return 0, err
