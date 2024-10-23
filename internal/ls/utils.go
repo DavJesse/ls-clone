@@ -1,10 +1,27 @@
 package internal
 
 type FileInfo struct {
-	DefaultList   string
-	DetailedList  string
+	DocName       string
+	DocPerm       string
 	RecursiveList string
-	AllList       string
+	PlusHidden    string
 	ReverseList   string
-	ModTimeList   string
+	ModTime       string
+}
+
+type FileList []FileInfo
+
+// Give sort.Sort interface size for sorting
+func (f FileList) Len() int {
+	return len(f)
+}
+
+// Give sorting algoriths parameter for sorting
+func (f FileList) Less(i, j int) bool {
+	return f[i].DocName < f[j].DocName
+}
+
+// Handle swapping
+func (f FileList) Swap(i, j int) {
+	f[i], f[j] = f[j], f[i]
 }
