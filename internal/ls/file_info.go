@@ -4,12 +4,15 @@
 package internal
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
+	"syscall"
 )
 
 func RetrieveFileInfo(path string) []FileInfo {
@@ -88,18 +91,22 @@ func RetrieveFileInfo(path string) []FileInfo {
 	return ResultList
 }
 
-// func RetrieveHardLinkCount(path string) (uint64, error) {
-// 	info, err := os.Lstat(path)
-// 	if err != nil {
-// 		return 0, err
-// 	}
+func RetrieveMetaData(path string) (MetaData, error) {
+	var result MetaData
 
-// 	stat, ok := info.Sys().(*syscall.Stat_t)
-// 	if !ok {
-// 		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
-// 		return 0, err
-// 	}
-// 	hardLinks := stat.Nlink
+	info, err := os.Lstat(path)
+	if err != nil {
+		return 0, err
+	}
 
-// 	return hardLinks, err
-// }
+	stat, ok := info.Sys().(*syscall.Stat_t)
+	if !ok {
+		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
+		return 0, err
+	}
+	result.HardLinkCount := int(stat.Nlink)
+	result.GroupID = strconv.Itoa(stat.Gid)
+	result.UserID = stat.Uid
+
+	return result, err
+}
