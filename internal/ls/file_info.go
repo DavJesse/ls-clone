@@ -112,3 +112,8 @@ func RetrieveFileInfo(path string) []FileInfo {
 
 // 	return result, err
 // }
+
+func IsExecutable(fileInfo os.FileInfo) bool {
+	mode := fileInfo.Mode()
+	return mode&0100 != 0 || mode&0010 != 0 || mode&0001 != 0
+}
