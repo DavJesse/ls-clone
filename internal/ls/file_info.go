@@ -12,8 +12,8 @@ import (
 	"strings"
 )
 
-func RetrieveFileInfo(path string) FileList {
-	var ResultList FileList
+func RetrieveFileInfo(path string) []FileInfo {
+	var ResultList []FileInfo
 	var doc FileInfo
 	var linkCount string
 	system := runtime.GOOS
@@ -83,7 +83,7 @@ func RetrieveFileInfo(path string) FileList {
 
 	// Sort files and directories lexicographically
 	// Case sensitivity is NOT taken in cosideration, as ls does
-	sort.Sort(ResultList)
+	sort.Sort(Alphabetic(ResultList))
 
 	return ResultList
 }

@@ -10,19 +10,19 @@ type FileInfo struct {
 	ModTime       string
 }
 
-type FileList []FileInfo
+type Alphabetic []FileInfo
 
 // Give sort.Sort interface size for sorting
-func (f FileList) Len() int {
+func (f Alphabetic) Len() int {
 	return len(f)
 }
 
 // Give sorting algoriths parameter for sorting
-func (f FileList) Less(i, j int) bool {
+func (f Alphabetic) Less(i, j int) bool {
 	return f[i].Index < f[j].Index
 }
 
 // Handle swapping
-func (f FileList) Swap(i, j int) {
+func (f Alphabetic) Swap(i, j int) {
 	f[i], f[j] = f[j], f[i]
 }

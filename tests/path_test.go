@@ -133,14 +133,14 @@ func TestIsValidPath_LeadingAndTrailingWhitespacePath(t *testing.T) {
 
 // Test handling of current directory
 func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
-	var expect internal.FileList
-	var result internal.FileList
+	var expect []internal.FileInfo
+	var result []internal.FileInfo
 	var point int
 	system := runtime.GOOS
 
 	if system == "windows" {
 		result = internal.RetrieveFileInfo(".")
-		expect = internal.FileList{
+		expect = []internal.FileInfo{
 			{DocName: "flag_test.go"},
 			{DocName: "ls_test.go"},
 			{DocName: "path_test.go"},
@@ -149,7 +149,7 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 
 	} else {
 		result = internal.RetrieveFileInfo(".")
-		expect = internal.FileList{
+		expect = []internal.FileInfo{
 			{DocName: "flag_test.go"},
 			{DocName: "ls_test.go"},
 			{DocName: "path_test.go"},
@@ -167,34 +167,16 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 	}
 }
 
-// func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
-// 	var pointer int
-
-// 	result := internal.RetrieveFileInfo(".")
-// 	expect := []string{"flag_test.go", "ls_test.go", "path_test.go", "sort_args_test.go"}
-
-// 	for pointer < len(result) && pointer < len(expect) {
-// 		if result[pointer] != expect[pointer] {
-// 			log.Println(result[pointer])
-// 			t.Errorf("Expected %v, Got %v", expect, result)
-// 			t.FailNow()
-// 		} else {
-// 			pointer++
-// 		}
-// 	}
-
-// }
-
 // Test handling of non current directory
 func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
-	var expect internal.FileList
-	var result internal.FileList
+	var expect []internal.FileInfo
+	var result []internal.FileInfo
 	var point int
 	system := runtime.GOOS
 
 	if system == "windows" {
 		result = internal.RetrieveFileInfo("..\\")
-		expect = internal.FileList{
+		expect = []internal.FileInfo{
 			{DocName: "\033[01;34mcmd\033[0m\\"},
 			{DocName: "commit.sh"},
 			{DocName: "go.mod"},
@@ -208,7 +190,7 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 
 	} else {
 		result = internal.RetrieveFileInfo("../")
-		expect = internal.FileList{
+		expect = []internal.FileInfo{
 			{DocName: "\033[01;34mcmd/"},
 			{DocName: "commit.sh"},
 			{DocName: "go.mod"},
