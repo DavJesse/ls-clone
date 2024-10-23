@@ -4,14 +4,11 @@
 package internal
 
 import (
-	"errors"
 	"log"
 	"os"
 	"runtime"
 	"sort"
-	"strconv"
 	"strings"
-	"syscall"
 )
 
 func RetrieveFileInfo(path string) FileList {
@@ -36,11 +33,11 @@ func RetrieveFileInfo(path string) FileList {
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
 		if system != "windows" {
-			hardLinks, err := RetrieveHardLinkCount(path + "/" + entry.Name())
+			//hardLinks, err := RetrieveHardLinkCount(path + "/" + entry.Name())
 			if err != nil {
 				log.Fatal(err)
 			}
-			linkCount = strconv.Itoa(int(hardLinks))
+			//	linkCount = strconv.Itoa(int(hardLinks))
 		}
 		// ignore git directories
 		if strings.Contains(entry.Name(), ".git") {
@@ -87,18 +84,18 @@ func RetrieveFileInfo(path string) FileList {
 	return ResultList
 }
 
-func RetrieveHardLinkCount(path string) (uint64, error) {
-	info, err := os.Lstat(path)
-	if err != nil {
-		return 0, err
-	}
+// func RetrieveHardLinkCount(path string) (uint64, error) {
+// 	info, err := os.Lstat(path)
+// 	if err != nil {
+// 		return 0, err
+// 	}
 
-	stat, ok := info.Sys().(*syscall.Stat_t)
-	if !ok {
-		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
-		return 0, err
-	}
-	hardLinks := stat.Nlink
+// 	stat, ok := info.Sys().(*syscall.Stat_t)
+// 	if !ok {
+// 		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
+// 		return 0, err
+// 	}
+// 	hardLinks := stat.Nlink
 
-	return hardLinks, err
-}
+// 	return hardLinks, err
+// }

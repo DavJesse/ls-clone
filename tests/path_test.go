@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"log"
 	"runtime"
 	"testing"
 
@@ -152,21 +153,49 @@ func TestIsValidPath_LeadingAndTrailingWhitespacePath(t *testing.T) {
 
 // Test handling of non current directory
 func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
-	var expect internal.FileInfo
-	var result internal.FileInfo
+	var expect internal.FileList
+	var result internal.FileList
+	var point int
 	system := runtime.GOOS
 
 	if system == "windows" {
 		result = internal.RetrieveFileInfo("..\\")
-		expect.DefaultList = "cmd\\ commit.sh go.mod internal LICENSE push_both.sh README.md run_my_ls.sh tests\\"
+		expect = internal.FileList{
+			{DocName: "\033[01;34mcmd\033[0m\\"},
+			{DocName: "commit.sh"},
+			{DocName: "go.mod"},
+			{DocName: "\033[01;34minternal\033[0m/"},
+			{DocName: "LICENSE"},
+			{DocName: "push_both.sh"},
+			{DocName: "README.md"},
+			{DocName: "run_my_ls.sh"},
+			{DocName: "\033[01;34mtests\033[0m\\"},
+		}
+
 	} else {
 		result = internal.RetrieveFileInfo("../")
-		expect.DefaultList = "cmd/ commit.sh go.mod internal/ LICENSE push_both.sh README.md run_my_ls.sh tests/"
+		expect = internal.FileList{
+			{DocName: "\033[01;34mcmd/"},
+			{DocName: "commit.sh"},
+			{DocName: "go.mod"},
+			{DocName: "\033[01;34minternal\033[0m/"},
+			{DocName: "LICENSE"},
+			{DocName: "push_both.sh"},
+			{DocName: "README.md"},
+			{DocName: "run_my_ls.sh"},
+			{DocName: "\033[01;34mtests\033[0m/"},
+		}
 	}
 
-	if result.DefaultList != expect.DefaultList {
-		t.Errorf("Expected %v, Got %v", expect.DefaultList, result.DefaultList)
-		t.FailNow()
+	for point < len(result) && point < len(expect) {
+		if result[point].DocName == expect[point].DocName {
+			point++
+		} else {
+			log.Println("Expected: ", expect)
+			log.Println("Got: ", result)
+			t.Errorf("Expected %v, Got %v", expect[point].DocName, result[point].DocName)
+			t.FailNow()
+		}
 	}
 }
 
