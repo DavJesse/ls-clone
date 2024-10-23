@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"os"
 	"runtime"
 	"testing"
 
@@ -342,3 +343,29 @@ func TestCleanArgs(t *testing.T) {
 // 		t.Errorf("Expected hard link count to be %d, but got %d", expectedCount, count)
 // 	}
 // }
+
+// Test correctness
+func TestIsExecutable(t *testing.T) {
+	var file *os.File
+	system := runtime.GOOS
+
+	// Define path based on os
+	if system == "windows" {
+		file, _ = os.Open("..\\")
+	} else {
+		file, _ = os.Open("../")
+	}
+	defer file.Close()
+
+	// All '.sh' files in this directory are executable
+	// Fail test when detection fails
+	entries, _ := file.Readdir(-1)
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSufix(entry.Name(), ".sh") {
+			if !internal.IsExecutable(entry) {
+				t.Errorf("Expected true, Got false")
+				t.FailNow()
+			}
+		}
+	}
+}
