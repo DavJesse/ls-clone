@@ -18,7 +18,10 @@ import (
 func RetrieveFileInfo(path string) []FileInfo {
 	var ResultList []FileInfo
 	var doc FileInfo
-	var linkCount string
+	var fileMetaData MetaData
+	var linkCount int
+	var userID, groupID string
+
 	system := runtime.GOOS
 
 	// Open directory/file for reading
@@ -37,11 +40,13 @@ func RetrieveFileInfo(path string) []FileInfo {
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
 		if system != "windows" {
-			//hardLinks, err := RetrieveHardLinkCount(path + "/" + entry.Name())
+			fileMetaData, err := RetrieveMetaData(path + "/" + entry.Name())
 			if err != nil {
 				log.Fatal(err)
 			}
-			//	linkCount = strconv.Itoa(int(hardLinks))
+			linkCount = fileMetaData.HardLinkCount
+			userID = fileMetaData.UserID
+			groupID = fileMetaData.GroupID
 		}
 		// ignore git directories
 		if strings.Contains(entry.Name(), ".git") {
@@ -55,7 +60,7 @@ func RetrieveFileInfo(path string) []FileInfo {
 				doc.Index = fmt.Sprintf("%v\\", strings.ToLower(entry.Name()))
 				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
 				doc.ModTime = entry.ModTime().String()
-				doc.DocPerm = fmt.Sprintf("%v not available \033[01;34m%v\033[0m//\n", entry.Mode().Perm().String(), entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v '-' '-' '-' %d %s \033[01;34m%v\033[0m//\n", entry.Mode().Perm().String(), entry.Size(), entry.ModTime().String(), entry.Name())
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
@@ -65,7 +70,7 @@ func RetrieveFileInfo(path string) []FileInfo {
 				doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 				doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
 				doc.ModTime = entry.ModTime().String()
-				doc.DocPerm = fmt.Sprintf("%v %v \033[01;34m%v\033[0m", entry.Mode().Perm().String(), linkCount, entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
@@ -77,7 +82,7 @@ func RetrieveFileInfo(path string) []FileInfo {
 			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
 			doc.DocName = entry.Name()
 			doc.ModTime = entry.ModTime().String()
-			doc.DocPerm = fmt.Sprintf("%v %v %v", entry.Mode().Perm().String(), linkCount, entry.Name())
+			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
 
 			// Append 'doc' to fileList
 			ResultList = append(ResultList, doc)
