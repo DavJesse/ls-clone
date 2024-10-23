@@ -51,6 +51,7 @@ func RetrieveFileInfo(path string) FileList {
 			if system == "windows" {
 				doc.Index = fmt.Sprintf("%v\\", strings.ToLower(entry.Name()))
 				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
+				doc.ModTime = entry.ModTime().String()
 				doc.DocPerm = fmt.Sprintf("%v not available \033[01;34m%v\033[0m//\n", entry.Mode().Perm().String(), entry.Name())
 
 				// Append 'doc' to fileList
@@ -60,6 +61,7 @@ func RetrieveFileInfo(path string) FileList {
 			} else {
 				doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 				doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
+				doc.ModTime = entry.ModTime().String()
 				doc.DocPerm = fmt.Sprintf("%v %v \033[01;34m%v\033[0m", entry.Mode().Perm().String(), linkCount, entry.Name())
 
 				// Append 'doc' to fileList
@@ -71,6 +73,7 @@ func RetrieveFileInfo(path string) FileList {
 		} else {
 			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
 			doc.DocName = entry.Name()
+			doc.ModTime = entry.ModTime().String()
 			doc.DocPerm = fmt.Sprintf("%v %v %v", entry.Mode().Perm().String(), linkCount, entry.Name())
 
 			// Append 'doc' to fileList
