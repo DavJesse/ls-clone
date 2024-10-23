@@ -77,9 +77,14 @@ func RetrieveFileInfo(path string) []FileInfo {
 			// Append result for file types
 		} else {
 			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
-			doc.DocName = entry.Name()
 			doc.ModTime = entry.ModTime().String()
-			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
+			if IsExecutable(entry) {
+				doc.DocName = fmt.Sprintf("\033[01;32m%s\033[0m*", entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
+			} else {
+				doc.DocName = entry.Name()
+				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
+			}
 
 			// Append 'doc' to fileList
 			ResultList = append(ResultList, doc)
