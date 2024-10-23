@@ -40,13 +40,13 @@ func RetrieveFileInfo(path string) []FileInfo {
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
 		if system != "windows" {
-			fileMetaData, err := RetrieveMetaData(path + "/" + entry.Name())
-			if err != nil {
-				log.Fatal(err)
-			}
-			linkCount = fileMetaData.HardLinkCount
-			userID = fileMetaData.UserID
-			groupID = fileMetaData.GroupID
+			// fileMetaData, err := RetrieveMetaData(path + "/" + entry.Name())
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+			// linkCount = fileMetaData.HardLinkCount
+			// userID = fileMetaData.UserID
+			// groupID = fileMetaData.GroupID
 		}
 		// ignore git directories
 		if strings.Contains(entry.Name(), ".git") {
@@ -96,22 +96,22 @@ func RetrieveFileInfo(path string) []FileInfo {
 	return ResultList
 }
 
-func RetrieveMetaData(path string) (MetaData, error) {
-	var result MetaData
+// func RetrieveMetaData(path string) (MetaData, error) {
+// 	var result MetaData
 
-	info, err := os.Lstat(path)
-	if err != nil {
-		return 0, err
-	}
+// 	info, err := os.Lstat(path)
+// 	if err != nil {
+// 		return 0, err
+// 	}
 
-	stat, ok := info.Sys().(*syscall.Stat_t)
-	if !ok {
-		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
-		return 0, err
-	}
-	result.HardLinkCount := int(stat.Nlink)
-	result.GroupID = strconv.Itoa(stat.Gid)
-	result.UserID = stat.Uid
+// 	stat, ok := info.Sys().(*syscall.Stat_t)
+// 	if !ok {
+// 		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
+// 		return 0, err
+// 	}
+// 	result.HardLinkCount := int(stat.Nlink)
+// 	result.GroupID = strconv.Itoa(stat.Gid)
+// 	result.UserID = stat.Uid
 
-	return result, err
-}
+// 	return result, err
+// }
