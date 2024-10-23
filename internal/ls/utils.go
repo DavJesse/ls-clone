@@ -43,3 +43,20 @@ func (f ReverseAlpha) Less(i, j int) bool {
 func (f ReverseAlpha) Swap(i, j int) {
 	f[i], f[j] = f[j], f[i]
 }
+
+type ByTime []FileInfo
+
+// Give sort.Sort interface size for sorting
+func (f ByTime) Len() int {
+	return len(f)
+}
+
+// Give sorting algoriths parameter for sorting
+func (f ByTime) Less(i, j int) bool {
+	return f[i].ModTime > f[j].ModTime
+}
+
+// Handle swapping
+func (f ByTime) Swap(i, j int) {
+	f[i], f[j] = f[j], f[i]
+}
