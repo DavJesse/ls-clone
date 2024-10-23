@@ -4,6 +4,7 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"runtime"
@@ -48,18 +49,18 @@ func RetrieveFileInfo(path string) FileList {
 			// Append result for windows systems
 			// Wrap text in bright blue
 			if system == "windows" {
-
+				doc.Index = fmt.Sprintf("%v\\", strings.ToLower(entry.Name()))
 				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
-				doc.DocPerm = entry.Mode().Perm().String() + " " + "not available" + " " + "\033[01;34m" + entry.Name() + "\\\n"
+				doc.DocPerm = fmt.Sprintf("%v not available \033[01;34m%v\033[0m//\n", entry.Mode().Perm().String(), entry.Name())
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
 
 				// Append result for other systems
 			} else {
-
-				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "/"
-				doc.DocPerm = entry.Mode().Perm().String() + " " + linkCount + " " + "\033[01;34m" + entry.Name()
+				doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
+				doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v %v \033[01;34m%v\033[0m", entry.Mode().Perm().String(), linkCount, entry.Name())
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
@@ -68,9 +69,9 @@ func RetrieveFileInfo(path string) FileList {
 
 			// Append result for file types
 		} else {
-
+			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
 			doc.DocName = entry.Name()
-			doc.DocPerm = entry.Mode().Perm().String() + " " + linkCount + " " + entry.Name()
+			doc.DocPerm = fmt.Sprintf("%v %v %v", entry.Mode().Perm().String(), linkCount, entry.Name())
 
 			// Append 'doc' to fileList
 			ResultList = append(ResultList, doc)

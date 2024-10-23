@@ -1,6 +1,7 @@
 package internal
 
 type FileInfo struct {
+	Index         string
 	DocName       string
 	DocPerm       string
 	RecursiveList string
@@ -18,7 +19,7 @@ func (f FileList) Len() int {
 
 // Give sorting algoriths parameter for sorting
 func (f FileList) Less(i, j int) bool {
-	return f[i].DocName < f[j].DocName
+	return f[i].Index < f[j].Index
 }
 
 // Handle swapping
