@@ -1,8 +1,10 @@
 package tests
 
 import (
+	"log"
 	"os"
 	"runtime"
+	"strings"
 	"testing"
 
 	internal "my-ls/internal/ls"
@@ -361,7 +363,7 @@ func TestIsExecutable(t *testing.T) {
 	// Fail test when detection fails
 	entries, _ := file.Readdir(-1)
 	for _, entry := range entries {
-		if !entry.IsDir() && strings.HasSufix(entry.Name(), ".sh") {
+		if !entry.IsDir() && strings.Contains(entry.Mode().Perm().String(), "x") {
 			if !internal.IsExecutable(entry) {
 				t.Errorf("Expected true, Got false")
 				t.FailNow()
