@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"log"
 	"os"
 	"runtime"
 	"strings"
