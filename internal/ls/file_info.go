@@ -4,21 +4,18 @@
 package internal
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
 	"runtime"
 	"sort"
-	"strconv"
 	"strings"
-	"syscall"
 )
 
 func RetrieveFileInfo(path string) []FileInfo {
 	var ResultList []FileInfo
 	var doc FileInfo
-	var fileMetaData MetaData
+	//var fileMetaData MetaData
 	var linkCount int
 	var userID, groupID string
 
