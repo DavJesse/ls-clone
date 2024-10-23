@@ -10,7 +10,15 @@ type FileInfo struct {
 	ModTime       string
 }
 
+type ReverseAlpha []FileInfo
 type Alphabetic []FileInfo
+type ByTime []FileInfo
+
+type MetaData struct {
+	HardLinkCount int
+	UserID        string
+	GroupID       string
+}
 
 // Give sort.Sort interface size for sorting
 func (f Alphabetic) Len() int {
@@ -27,8 +35,6 @@ func (f Alphabetic) Swap(i, j int) {
 	f[i], f[j] = f[j], f[i]
 }
 
-type ReverseAlpha []FileInfo
-
 // Give sort.Sort interface size for sorting
 func (f ReverseAlpha) Len() int {
 	return len(f)
@@ -43,8 +49,6 @@ func (f ReverseAlpha) Less(i, j int) bool {
 func (f ReverseAlpha) Swap(i, j int) {
 	f[i], f[j] = f[j], f[i]
 }
-
-type ByTime []FileInfo
 
 // Give sort.Sort interface size for sorting
 func (f ByTime) Len() int {
