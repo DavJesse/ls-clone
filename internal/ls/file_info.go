@@ -4,18 +4,21 @@
 package internal
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
+	"syscall"
 )
 
 func RetrieveFileInfo(path string) []FileInfo {
 	var ResultList []FileInfo
 	var doc FileInfo
-	//var fileMetaData MetaData
+	// var fileMetaData MetaData
 	var linkCount int
 	var userID, groupID string
 
@@ -98,27 +101,28 @@ func RetrieveFileInfo(path string) []FileInfo {
 	return ResultList
 }
 
-// func RetrieveMetaData(path string) (MetaData, error) {
-// 	var result MetaData
+func RetrieveMetaData(path string) (MetaData, error) {
+	var result MetaData
 
-// 	info, err := os.Lstat(path)
-// 	if err != nil {
-// 		return 0, err
-// 	}
+	info, err := os.Lstat(path)
+	if err != nil {
+		return result, err
+	}
 
-// 	stat, ok := info.Sys().(*syscall.Stat_t)
-// 	if !ok {
-// 		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
-// 		return 0, err
-// 	}
-// 	result.HardLinkCount := int(stat.Nlink)
-// 	result.GroupID = strconv.Itoa(stat.Gid)
-// 	result.UserID = stat.Uid
+	// Extract metadata from syscall.Stat_t
+	stat, ok := info.Sys().(*syscall.Stat_t)
+	if !ok {
+		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
+		return result, err
+	}
+	result.HardLinkCount = int(stat.Nlink)
+	result.GroupID = strconv.Itoa(int(stat.Gid))
+	result.UserID = strconv.Itoa(int(stat.Uid))
 
-// 	return result, err
-// }
+	return result, err
+}
 
 func IsExecutable(fileInfo os.FileInfo) bool {
 	mode := fileInfo.Mode()
-	return mode&0100 != 0 || mode&0010 != 0 || mode&0001 != 0
+	return mode&0o100 != 0 || mode&0o010 != 0 || mode&0o001 != 0
 }
