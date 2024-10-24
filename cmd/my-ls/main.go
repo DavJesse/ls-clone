@@ -10,7 +10,6 @@ import (
 func main() {
 	args := os.Args[1:] // Retrieve arguments from command line
 
-	fmt.Printf("%q\n", args)
 	// Extract flags and paths from user arguments
 	// Handle errors, if encountered
 	flag, path, err := internal.SortArgs(args)
@@ -18,7 +17,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	files := internal.RetrieveFileInfo(path)
-	fmt.Println(files)
+	files := internal.RetrieveFileInfo(path, false)
+	for i := range files {
+		fmt.Print("Index: ")
+		fmt.Println(files[i].Index)
+		fmt.Println()
+		fmt.Println()
+
+		fmt.Print("File/Dir Name: ")
+		fmt.Println(files[i].DocName)
+		fmt.Println()
+		fmt.Println()
+
+		fmt.Print("File/Dir Detail: ")
+		fmt.Println(files[i].DocPerm)
+		fmt.Println()
+		fmt.Println()
+	}
+	//fmt.Println(files)
 	fmt.Println(flag)
 }
