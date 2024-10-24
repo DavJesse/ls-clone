@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func RetrieveFileInfo(path string) []FileInfo {
+func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 	var ResultList []FileInfo
 	var doc FileInfo
 	// var fileMetaData MetaData
@@ -45,15 +45,15 @@ func RetrieveFileInfo(path string) []FileInfo {
 			// userID = fileMetaData.UserID
 			// groupID = fileMetaData.GroupID
 		}
-		// ignore git directories
-		if strings.Contains(entry.Name(), ".git") {
-			continue
-		}
 
 		if entry.IsDir() {
 			// Append result for windows systems
 			// Wrap text in bright blue
 			if system == "windows" {
+				// ignore hidden directories
+				if entry.Name()[0] == '.' && !includeHidden {
+					continue
+				}
 				doc.Index = fmt.Sprintf("%v\\", strings.ToLower(entry.Name()))
 				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
 				doc.ModTime = entry.ModTime().String()
@@ -64,6 +64,11 @@ func RetrieveFileInfo(path string) []FileInfo {
 
 				// Append result for other systems
 			} else {
+				// ignore hidden directories
+				if entry.Name()[0] == '.' && !includeHidden {
+					continue
+				}
+
 				doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 				doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
 				doc.ModTime = entry.ModTime().String()
@@ -76,6 +81,10 @@ func RetrieveFileInfo(path string) []FileInfo {
 
 			// Append result for file types
 		} else {
+			// ignore hidden files
+			if entry.Name()[0] == '.' && !includeHidden {
+				continue
+			}
 			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
 			doc.ModTime = entry.ModTime().String()
 			if IsExecutable(entry) {
