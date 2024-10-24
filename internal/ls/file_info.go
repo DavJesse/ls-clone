@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
 	"runtime"
 	"sort"
 	"strconv"
@@ -116,8 +117,23 @@ func RetrieveMetaData(path string) (MetaData, error) {
 		return result, err
 	}
 	result.HardLinkCount = int(stat.Nlink)
-	result.GroupID = strconv.Itoa(int(stat.Gid))
-	result.UserID = strconv.Itoa(int(stat.Uid))
+	groupID := strconv.Itoa(int(stat.Gid))
+	userID := strconv.Itoa(int(stat.Uid))
+
+	// Extract user
+	u, err1 := user.LookupId(userID)
+	if err1 != nil {
+		return result, err1
+	}
+
+	// Extract group
+	g, err2 := user.LookupGroupId(groupID)
+	if err2 != nil {
+		return result, err2
+	}
+
+	result.UserID = u.Username
+	result.GroupID = g.Name
 
 	return result, err
 }
