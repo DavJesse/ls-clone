@@ -85,8 +85,9 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 			if entry.Name()[0] == '.' && !includeHidden {
 				continue
 			}
-			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
-			doc.ModTime = entry.ModTime().String()
+
+			// Add bright-green color to executable files
+			// Retain default color for non-executable
 			if IsExecutable(entry) {
 				doc.DocName = fmt.Sprintf("\033[01;32m%s\033[0m*", entry.Name())
 				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
@@ -94,6 +95,8 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 				doc.DocName = entry.Name()
 				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
 			}
+			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
+			doc.ModTime = entry.ModTime().String()
 
 			// Append 'doc' to fileList
 			ResultList = append(ResultList, doc)
