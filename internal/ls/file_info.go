@@ -40,13 +40,13 @@ func RetrieveFileInfo(path string) []FileInfo {
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
 		if system != "windows" {
-			// fileMetaData, err := RetrieveMetaData(path + "/" + entry.Name())
-			// if err != nil {
-			// 	log.Fatal(err)
-			// }
-			// linkCount = fileMetaData.HardLinkCount
-			// userID = fileMetaData.UserID
-			// groupID = fileMetaData.GroupID
+			fileMetaData, err := RetrieveMetaData(path + "/" + entry.Name())
+			if err != nil {
+				log.Fatal(err)
+			}
+			linkCount = fileMetaData.HardLinkCount
+			userID = fileMetaData.UserID
+			groupID = fileMetaData.GroupID
 		}
 		// ignore git directories
 		if strings.Contains(entry.Name(), ".git") {
