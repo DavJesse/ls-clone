@@ -4,16 +4,12 @@
 package internal
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
-	"os/user"
 	"runtime"
 	"sort"
-	"strconv"
 	"strings"
-	"syscall"
 )
 
 func RetrieveFileInfo(path string) []FileInfo {
@@ -41,13 +37,13 @@ func RetrieveFileInfo(path string) []FileInfo {
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
 		if system != "windows" {
-			fileMetaData, err := RetrieveMetaData(path + "/" + entry.Name())
-			if err != nil {
-				log.Fatal(err)
-			}
-			linkCount = fileMetaData.HardLinkCount
-			userID = fileMetaData.UserID
-			groupID = fileMetaData.GroupID
+			// fileMetaData, err := RetrieveMetaData(path + "/" + entry.Name())
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+			// linkCount = fileMetaData.HardLinkCount
+			// userID = fileMetaData.UserID
+			// groupID = fileMetaData.GroupID
 		}
 		// ignore git directories
 		if strings.Contains(entry.Name(), ".git") {
@@ -102,41 +98,41 @@ func RetrieveFileInfo(path string) []FileInfo {
 	return ResultList
 }
 
-func RetrieveMetaData(path string) (MetaData, error) {
-	var result MetaData
+// func RetrieveMetaData(path string) (MetaData, error) {
+// 	var result MetaData
 
-	info, err := os.Lstat(path)
-	if err != nil {
-		return result, err
-	}
+// 	info, err := os.Lstat(path)
+// 	if err != nil {
+// 		return result, err
+// 	}
 
-	// Extract metadata from syscall.Stat_t
-	stat, ok := info.Sys().(*syscall.Stat_t)
-	if !ok {
-		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
-		return result, err
-	}
-	result.HardLinkCount = int(stat.Nlink)
-	groupID := strconv.Itoa(int(stat.Gid))
-	userID := strconv.Itoa(int(stat.Uid))
+// 	// Extract metadata from syscall.Stat_t
+// 	stat, ok := info.Sys().(*syscall.Stat_t)
+// 	if !ok {
+// 		err = errors.New("couldn't get raw syscall.Stat_t data from" + path)
+// 		return result, err
+// 	}
+// 	result.HardLinkCount = int(stat.Nlink)
+// 	groupID := strconv.Itoa(int(stat.Gid))
+// 	userID := strconv.Itoa(int(stat.Uid))
 
-	// Extract user
-	u, err1 := user.LookupId(userID)
-	if err1 != nil {
-		return result, err1
-	}
+// 	// Extract user
+// 	u, err1 := user.LookupId(userID)
+// 	if err1 != nil {
+// 		return result, err1
+// 	}
 
-	// Extract group
-	g, err2 := user.LookupGroupId(groupID)
-	if err2 != nil {
-		return result, err2
-	}
+// 	// Extract group
+// 	g, err2 := user.LookupGroupId(groupID)
+// 	if err2 != nil {
+// 		return result, err2
+// 	}
 
-	result.UserID = u.Username
-	result.GroupID = g.Name
+// 	result.UserID = u.Username
+// 	result.GroupID = g.Name
 
-	return result, err
-}
+// 	return result, err
+// }
 
 func IsExecutable(fileInfo os.FileInfo) bool {
 	mode := fileInfo.Mode()
