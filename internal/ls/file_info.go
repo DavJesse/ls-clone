@@ -57,7 +57,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 				doc.Index = fmt.Sprintf("%v\\", strings.ToLower(entry.Name()))
 				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
 				doc.ModTime = entry.ModTime().String()
-				doc.DocPerm = fmt.Sprintf("%v '-' '-' '-' %d %s \033[01;34m%v\033[0m//\n", entry.Mode().Perm().String(), entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v '-' '-' '-' %d %s \033[01;34m%v\033[0m//", entry.Mode().Perm().String(), entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
