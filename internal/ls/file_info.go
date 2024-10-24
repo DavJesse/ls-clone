@@ -46,6 +46,30 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 			// groupID = fileMetaData.GroupID
 		}
 
+		// Recursively append contents of directory to doc.RecursiveList
+		// filepath.WalkDir(path, func(path string, d fs.DirEntry, err error) error {
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	// Skip hidden files
+		// 	if (d.Name() != "." || d.Name() != "..") && d.Name() != "" && d.Name()[0] == '.' && !includeHidden {
+		// 		log.Println(d.Name())
+		// 		if d.IsDir() {
+		// 			return filepath.SkipDir
+		// 		}
+		// 		return nil
+		// 	}
+		// 	log.Println("yes")
+		// 	if d.IsDir() {
+		// 		doc.RecursiveList += fmt.Sprintf("\033[01;34m%s\033[0m//:\n", path)
+		// 	} else {
+		// 		doc.RecursiveList += path + "\n"
+		// 	}
+
+		// 	return nil
+		// })
+
 		if entry.IsDir() {
 			// Append result for windows systems
 			// Wrap text in bright blue

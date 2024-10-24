@@ -27,6 +27,9 @@ func main() {
 
 		fmt.Print("File/Dir Detail: ")
 		fmt.Println(files[i].DocPerm)
+
+		fmt.Print("Recursive List: ")
+		fmt.Println(files[i].RecursiveList)
 		fmt.Println()
 		fmt.Println()
 	}
