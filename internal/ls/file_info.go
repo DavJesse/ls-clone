@@ -57,7 +57,7 @@ func RetrieveFileInfo(path string) []FileInfo {
 				doc.Index = fmt.Sprintf("%v\\", strings.ToLower(entry.Name()))
 				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
 				doc.ModTime = entry.ModTime().String()
-				doc.DocPerm = fmt.Sprintf("%v '-' '-' '-' %d %s \033[01;34m%v\033[0m//\n", entry.Mode().Perm().String(), entry.Size(), entry.ModTime().String(), entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v '-' '-' '-' %d %s \033[01;34m%v\033[0m//\n", entry.Mode().Perm().String(), entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
@@ -67,7 +67,7 @@ func RetrieveFileInfo(path string) []FileInfo {
 				doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 				doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
 				doc.ModTime = entry.ModTime().String()
-				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
@@ -80,10 +80,10 @@ func RetrieveFileInfo(path string) []FileInfo {
 			doc.ModTime = entry.ModTime().String()
 			if IsExecutable(entry) {
 				doc.DocName = fmt.Sprintf("\033[01;32m%s\033[0m*", entry.Name())
-				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
 			} else {
 				doc.DocName = entry.Name()
-				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().String(), entry.Name())
+				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
 			}
 
 			// Append 'doc' to fileList
