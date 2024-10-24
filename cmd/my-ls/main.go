@@ -21,13 +21,9 @@ func main() {
 	for i := range files {
 		fmt.Print("Index: ")
 		fmt.Println(files[i].Index)
-		fmt.Println()
-		fmt.Println()
 
 		fmt.Print("File/Dir Name: ")
 		fmt.Println(files[i].DocName)
-		fmt.Println()
-		fmt.Println()
 
 		fmt.Print("File/Dir Detail: ")
 		fmt.Println(files[i].DocPerm)
