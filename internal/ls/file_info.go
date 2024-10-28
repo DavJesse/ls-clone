@@ -220,6 +220,7 @@ func AppendRootDir(fileList []fs.FileInfo, doc FileInfo, includeHidden bool) Fil
 		}
 	}
 	files := strings.Fields(doc.RecursiveList)
+	log.Println(files)
 	sort.Strings(files)
 	doc.RecursiveList = strings.Join(files, " ")
 	return doc
