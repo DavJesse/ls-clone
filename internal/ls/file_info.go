@@ -39,6 +39,10 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 		log.Fatal(err)
 	}
 
+	// Append root directory to fileList
+	doc = AppendRootDir(entries, doc)
+	ResultList = append(ResultList, doc)
+
 	// Retrieve directory/file name and append to fileList
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
