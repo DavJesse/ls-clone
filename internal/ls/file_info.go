@@ -60,7 +60,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 				}
 
 				// Skip hidden files and directories if not included
-				if !includeHidden && d.Name() != "." && d.Name() != ".." && strings.HasPrefix(d.Name(), ".") {
+				if !includeHidden && !IsHidden(d.Name()) {
 					if d.IsDir() {
 						return filepath.SkipDir
 					}
@@ -103,7 +103,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 				// Append result for other systems
 			} else {
 				// ignore hidden directories
-				if entry.Name()[0] == '.' && !includeHidden {
+				if !IsHidden(entry.Name()) && !includeHidden {
 					continue
 				}
 
