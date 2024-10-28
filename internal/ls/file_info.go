@@ -212,7 +212,7 @@ func AppendRootDir(fileList []fs.FileInfo, doc FileInfo) FileInfo {
 		if i != 0 {
 			doc.RecursiveList += fileList[i].Name()
 		} else {
-			doc.RecursiveList += " " + fileList[i].Name()
+			doc.RecursiveList += fileList[i].Name() + " "
 		}
 	}
 	return doc
