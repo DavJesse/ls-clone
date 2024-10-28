@@ -213,15 +213,21 @@ func AppendRootDir(fileList []fs.FileInfo, doc FileInfo, includeHidden bool) Fil
 		doc.RecursiveList = ". .. "
 	}
 	for i := range fileList {
+		if !includeHidden && IsHidden(fileList[i].Name()) {
+			log.Println(fileList[i].Name())
+			i++
+		}
 		if i != 0 {
-			doc.RecursiveList += fileList[i].Name()
+			doc.RecursiveList += " " + fileList[i].Name()
 		} else {
-			doc.RecursiveList += fileList[i].Name() + " "
+			doc.RecursiveList += fileList[i].Name()
 		}
 	}
+
 	files := strings.Fields(doc.RecursiveList)
-	log.Println(files)
-	sort.Strings(files)
+	sort.Slice(files, func(i, j int) bool {
+		return strings.ToLower(files[i]) < strings.ToLower(files[j])
+	})
 	doc.RecursiveList = strings.Join(files, " ")
 	return doc
 }
