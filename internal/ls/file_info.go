@@ -200,3 +200,16 @@ func IsHidden(path string) bool {
 	}
 	return false
 }
+
+// Updates doc with the contents of the root directory.
+func AppendRootDir(fileList []fs.FileInfo, doc FileInfo) FileInfo {
+	doc.Index = "."
+	for i := range fileList {
+		if i != 0 {
+			doc.RecursiveList += fileList[i].Name()
+		} else {
+			doc.RecursiveList += " " + fileList[i].Name()
+		}
+	}
+	return doc
+}
