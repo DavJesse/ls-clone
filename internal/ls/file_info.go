@@ -40,7 +40,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 	}
 
 	// Append root directory to fileList
-	doc = AppendRootDir(entries, doc)
+	doc = AppendRootDir(entries, doc, includeHidden)
 	ResultList = append(ResultList, doc)
 
 	// Retrieve directory/file name and append to fileList
