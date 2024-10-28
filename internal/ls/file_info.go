@@ -190,3 +190,13 @@ func IsExecutable(fileInfo os.FileInfo) bool {
 	mode := fileInfo.Mode()
 	return mode&0o100 != 0 || mode&0o010 != 0 || mode&0o001 != 0
 }
+
+// Check if file on a given path is hidden.
+func IsHidden(path string) bool {
+	if strings.HasPrefix(filepath.Base(path), ".") {
+		if len(path) == 2 && path[1] != '.' {
+			return true
+		}
+	}
+	return false
+}
