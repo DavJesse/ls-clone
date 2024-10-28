@@ -141,7 +141,7 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 	system := runtime.GOOS
 
 	if system == "windows" {
-		result = internal.RetrieveFileInfo(".")
+		result = internal.RetrieveFileInfo(".", false)
 		expect = []internal.FileInfo{
 			{DocName: "flag_test.go"},
 			{DocName: "ls_test.go"},
@@ -150,7 +150,7 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 		}
 
 	} else {
-		result = internal.RetrieveFileInfo(".")
+		result = internal.RetrieveFileInfo(".", false)
 		expect = []internal.FileInfo{
 			{DocName: "flag_test.go"},
 			{DocName: "ls_test.go"},
@@ -177,7 +177,7 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 	system := runtime.GOOS
 
 	if system == "windows" {
-		result = internal.RetrieveFileInfo("..\\")
+		result = internal.RetrieveFileInfo("..\\", false)
 		expect = []internal.FileInfo{
 			{DocName: "\033[01;34mcmd\033[0m\\"},
 			{DocName: "commit.sh"},
@@ -191,16 +191,16 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 		}
 
 	} else {
-		result = internal.RetrieveFileInfo("../")
+		result = internal.RetrieveFileInfo("../", false)
 		expect = []internal.FileInfo{
-			{DocName: "\033[01;34mcmd/"},
-			{DocName: "commit.sh"},
+			{DocName: "\033[01;34mcmd\033[0m/"},
+			{DocName: "\033[01;32mcommit.sh\033[0m*"},
 			{DocName: "go.mod"},
 			{DocName: "\033[01;34minternal\033[0m/"},
 			{DocName: "LICENSE"},
-			{DocName: "push_both.sh"},
+			{DocName: "\033[01;32mpush_both.sh\033[0m*"},
 			{DocName: "README.md"},
-			{DocName: "run_my_ls.sh"},
+			{DocName: "\033[01;32mrun_my_ls.sh\033[0m*"},
 			{DocName: "\033[01;34mtests\033[0m/"},
 		}
 	}
