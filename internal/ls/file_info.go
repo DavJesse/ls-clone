@@ -6,7 +6,6 @@ package internal
 import (
 	"errors"
 	"fmt"
-	"io/fs"
 	"log"
 	"os"
 	"os/user"
@@ -39,10 +38,6 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 		log.Fatal(err)
 	}
 
-	// Append root directory to fileList
-	doc = AppendRootDir(entries, doc, includeHidden)
-	ResultList = append(ResultList, doc)
-
 	// Retrieve directory/file name and append to fileList
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
@@ -57,38 +52,6 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 		}
 
 		if entry.IsDir() {
-			doc.RecursiveList = fmt.Sprintf("\033[01;34m%s\033[0m/\n", entry.Name())
-			err := filepath.WalkDir(filepath.Join(path, entry.Name()), func(subPath string, d fs.DirEntry, err error) error {
-				if err != nil {
-					return err
-				}
-
-				// Skip hidden files and directories if not included
-				if !includeHidden && !IsHidden(d.Name()) {
-					if d.IsDir() {
-						return filepath.SkipDir
-					}
-					return nil
-				}
-
-				// Skip the root directory itself
-				if subPath == filepath.Join(path, entry.Name()) {
-					return nil
-				}
-
-				// relPath, _ := filepath.Rel(path, subPath)
-				if d.IsDir() {
-					doc.RecursiveList += fmt.Sprintf("\033[01;34m%s\033[0m:\n", d.Name())
-				} else {
-					doc.RecursiveList += d.Name() + " "
-				}
-
-				return nil
-			})
-
-			if err != nil {
-				log.Printf("Error walking directory %s: %v\n", entry.Name(), err)
-			}
 			// Append result for windows systems
 			// Wrap text in bright blue
 			if system == "windows" {
@@ -127,8 +90,6 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 			if entry.Name()[0] == '.' && !includeHidden {
 				continue
 			}
-
-			doc.RecursiveList = ""
 
 			// Add bright-green color to executable files
 			// Retain default color for non-executable
@@ -203,31 +164,4 @@ func IsHidden(path string) bool {
 		}
 	}
 	return false
-}
-
-// Updates doc with the contents of the root directory.
-func AppendRootDir(fileList []fs.FileInfo, doc FileInfo, includeHidden bool) FileInfo {
-	doc.Index = "."
-
-	if includeHidden {
-		doc.RecursiveList = ". .. "
-	}
-	for i := range fileList {
-		if !includeHidden && IsHidden(fileList[i].Name()) {
-			log.Println(fileList[i].Name())
-			i++
-		}
-		if i != 0 {
-			doc.RecursiveList += " " + fileList[i].Name()
-		} else {
-			doc.RecursiveList += fileList[i].Name()
-		}
-	}
-
-	files := strings.Fields(doc.RecursiveList)
-	sort.Slice(files, func(i, j int) bool {
-		return strings.ToLower(files[i]) < strings.ToLower(files[j])
-	})
-	doc.RecursiveList = strings.Join(files, " ")
-	return doc
 }
