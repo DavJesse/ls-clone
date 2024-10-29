@@ -4,7 +4,7 @@ type FileInfo struct {
 	Index         string
 	DocName       string
 	DocPerm       string
-	RecursiveList string
+	RecursiveList []DirFile
 	PlusHidden    string
 	ReverseList   string
 	ModTime       string
@@ -18,6 +18,11 @@ type MetaData struct {
 	HardLinkCount int
 	UserID        string
 	GroupID       string
+}
+
+type DirFile struct {
+	Dir   string
+	Files []string
 }
 
 // Give sort.Sort interface size for sorting
