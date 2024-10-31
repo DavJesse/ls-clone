@@ -4,7 +4,7 @@ type FileInfo struct {
 	Index         string
 	DocName       string
 	DocPerm       string
-	RecursiveList []DirFile
+	RecursiveList []FileInfo
 	PlusHidden    string
 	ReverseList   string
 	ModTime       string

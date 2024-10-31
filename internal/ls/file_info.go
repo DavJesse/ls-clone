@@ -70,10 +70,10 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 			} else {
 				// ignore hidden directories
 				if IsHidden(entry.Name()) && !includeHidden {
-					log.Println(entry.Name())
 					continue
 				}
 
+				doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden)
 				doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 				doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
 				doc.ModTime = entry.ModTime().String()
@@ -81,13 +81,14 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 
 				// Append 'doc' to fileList
 				ResultList = append(ResultList, doc)
+				doc = FileInfo{}
 
 			}
 
 			// Append result for file types
 		} else {
 			// ignore hidden files
-			if entry.Name()[0] == '.' && !includeHidden {
+			if IsHidden(entry.Name()) && !includeHidden {
 				continue
 			}
 
@@ -105,6 +106,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 
 			// Append 'doc' to fileList
 			ResultList = append(ResultList, doc)
+			doc = FileInfo{}
 		}
 	}
 
