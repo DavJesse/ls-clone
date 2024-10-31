@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 	"os/user"
-	"path/filepath"
 	"runtime"
 	"sort"
 	"strconv"
@@ -70,7 +69,8 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 				// Append result for other systems
 			} else {
 				// ignore hidden directories
-				if !IsHidden(entry.Name()) && !includeHidden {
+				if IsHidden(entry.Name()) && !includeHidden {
+					log.Println(entry.Name())
 					continue
 				}
 
@@ -158,10 +158,5 @@ func IsExecutable(fileInfo os.FileInfo) bool {
 
 // Check if file on a given path is hidden.
 func IsHidden(path string) bool {
-	if strings.HasPrefix(filepath.Base(path), ".") {
-		if len(path) == 2 && path[1] != '.' {
-			return true
-		}
-	}
-	return false
+	return strings.HasPrefix(path, ".")
 }
