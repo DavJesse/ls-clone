@@ -28,8 +28,13 @@ func main() {
 		fmt.Print("File/Dir Detail: ")
 		fmt.Println(files[i].DocPerm)
 
-		fmt.Print("Recursive List: ")
-		fmt.Println(files[i].RecursiveList)
+		if len(files[i].RecursiveList) > 0 {
+			fmt.Println("Recursive List:")
+			for j := range files[i].RecursiveList {
+				fmt.Printf("%s ", files[i].RecursiveList[j].DocName)
+			}
+		}
+		//fmt.Println(files[i].RecursiveList)
 		fmt.Println()
 		fmt.Println()
 	}
