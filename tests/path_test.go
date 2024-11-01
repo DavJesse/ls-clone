@@ -2,7 +2,6 @@ package tests
 
 import (
 	"os"
-	"runtime"
 	"strings"
 	"testing"
 
@@ -11,16 +10,7 @@ import (
 
 // Test non-empty paths
 func TestIsValidPath_NonEmptyString(t *testing.T) {
-	var result bool
-	var err error
-	system := runtime.GOOS
-
-	// Test path based on operating system
-	if system == "windows" {
-		result, err = internal.IsValidPath("some\\path")
-	} else {
-		result, err = internal.IsValidPath("some/path")
-	}
+	result, err := internal.IsValidPath("some/path")
 	if !result {
 		t.Errorf("Expected true; Got false")
 		t.Errorf("Reason: %v", err)
@@ -76,16 +66,7 @@ func TestIsValidPath_VeryLongPath(t *testing.T) {
 
 // Test special-character-paths
 func TestIsValidPath_SpecialCharacterPath(t *testing.T) {
-	var result bool
-	var err error
-	system := runtime.GOOS
-
-	// Test special characters based on opperating system
-	if system == "windows" {
-		result, err = internal.IsValidPath("#$%^&()")
-	} else {
-		result, err = internal.IsValidPath("#$%^&*()")
-	}
+	result, err := internal.IsValidPath("#$%^&*()")
 	if !result {
 		t.Errorf("Expected true; Got false")
 		t.Errorf("Reason: %v", err)
@@ -138,25 +119,13 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 	var expect []internal.FileInfo
 	var result []internal.FileInfo
 	var point int
-	system := runtime.GOOS
 
-	if system == "windows" {
-		result = internal.RetrieveFileInfo(".", false)
-		expect = []internal.FileInfo{
-			{DocName: "flag_test.go"},
-			{DocName: "ls_test.go"},
-			{DocName: "path_test.go"},
-			{DocName: "sort_args_test.go"},
-		}
-
-	} else {
-		result = internal.RetrieveFileInfo(".", false)
-		expect = []internal.FileInfo{
-			{DocName: "flag_test.go"},
-			{DocName: "ls_test.go"},
-			{DocName: "path_test.go"},
-			{DocName: "sort_args_test.go"},
-		}
+	result = internal.RetrieveFileInfo(".", false)
+	expect = []internal.FileInfo{
+		{DocName: "flag_test.go"},
+		{DocName: "ls_test.go"},
+		{DocName: "path_test.go"},
+		{DocName: "sort_args_test.go"},
 	}
 
 	for point < len(result) && point < len(expect) {
@@ -174,35 +143,18 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 	var expect []internal.FileInfo
 	var result []internal.FileInfo
 	var point int
-	system := runtime.GOOS
 
-	if system == "windows" {
-		result = internal.RetrieveFileInfo("..\\", false)
-		expect = []internal.FileInfo{
-			{DocName: "\033[01;34mcmd\033[0m\\"},
-			{DocName: "commit.sh"},
-			{DocName: "go.mod"},
-			{DocName: "\033[01;34minternal\033[0m\\"},
-			{DocName: "LICENSE"},
-			{DocName: "push_both.sh"},
-			{DocName: "README.md"},
-			{DocName: "run_my_ls.sh"},
-			{DocName: "\033[01;34mtests\033[0m\\"},
-		}
-
-	} else {
-		result = internal.RetrieveFileInfo("../", false)
-		expect = []internal.FileInfo{
-			{DocName: "\033[01;34mcmd\033[0m/"},
-			{DocName: "\033[01;32mcommit.sh\033[0m*"},
-			{DocName: "go.mod"},
-			{DocName: "\033[01;34minternal\033[0m/"},
-			{DocName: "LICENSE"},
-			{DocName: "\033[01;32mpush_both.sh\033[0m*"},
-			{DocName: "README.md"},
-			{DocName: "\033[01;32mrun_my_ls.sh\033[0m*"},
-			{DocName: "\033[01;34mtests\033[0m/"},
-		}
+	result = internal.RetrieveFileInfo("../", false)
+	expect = []internal.FileInfo{
+		{DocName: "\033[01;34mcmd\033[0m/"},
+		{DocName: "\033[01;32mcommit.sh\033[0m*"},
+		{DocName: "go.mod"},
+		{DocName: "\033[01;34minternal\033[0m/"},
+		{DocName: "LICENSE"},
+		{DocName: "\033[01;32mpush_both.sh\033[0m*"},
+		{DocName: "README.md"},
+		{DocName: "\033[01;32mrun_my_ls.sh\033[0m*"},
+		{DocName: "\033[01;34mtests\033[0m/"},
 	}
 
 	for point < len(result) && point < len(expect) {
@@ -347,15 +299,8 @@ func TestCleanArgs(t *testing.T) {
 
 // Test correctness
 func TestIsExecutable(t *testing.T) {
-	var file *os.File
-	system := runtime.GOOS
+	file, _ := os.Open("../")
 
-	// Define path based on os
-	if system == "windows" {
-		file, _ = os.Open("..\\")
-	} else {
-		file, _ = os.Open("../")
-	}
 	defer file.Close()
 
 	// All '.sh' files in this directory are executable

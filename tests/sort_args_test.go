@@ -1,10 +1,10 @@
 package tests
 
 import (
-	internal "my-ls/internal/ls"
-	"runtime"
 	"strings"
 	"testing"
+
+	internal "my-ls/internal/ls"
 )
 
 // Test for zero-length-arguments
@@ -63,7 +63,6 @@ func TestSortArgs_OneInValidArgument(t *testing.T) {
 
 // Test valid two-argument input
 func TestSortArgs_TwoArgument(t *testing.T) {
-	system := runtime.GOOS
 	type result struct {
 		Input []string
 		Flag  string
@@ -71,21 +70,10 @@ func TestSortArgs_TwoArgument(t *testing.T) {
 		Err   bool
 	}
 
-	testCases := []result{}
-
-	// Issue expected results based on operating system
-	if system == "windows" {
-		testCases = []result{
-			{[]string{"-lRa", "directory\\file"}, "-lRa", "directory\\file", true},
-			{[]string{"directory\\file", "-lRa"}, "", "", false},
-			{[]string{"-lRa", "directory/file"}, "", "", false},
-		}
-	} else {
-		testCases = []result{
-			{[]string{"-lRa", "directory/file"}, "-lRa", "directory/file", true},
-			{[]string{"directory/file", "-lRa"}, "", "", false},
-			{[]string{"-lRa", "directory\\file"}, "", "", false},
-		}
+	testCases := []result{
+		{[]string{"-lRa", "directory/file"}, "-lRa", "directory/file", true},
+		{[]string{"directory/file", "-lRa"}, "", "", false},
+		{[]string{"-lRa", "directory\\file"}, "", "", false},
 	}
 
 	for _, tc := range testCases {

@@ -6,6 +6,7 @@ package internal
 import "fmt"
 
 func UnravelFiles(files []FileInfo) {
+	//var relPath string
 	for i := range files {
 		fmt.Println(files[i].DocName)
 		if len(files[i].RecursiveList) > 0 {

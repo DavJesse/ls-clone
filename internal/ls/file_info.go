@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 	"os/user"
-	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -22,8 +21,6 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 	var fileMetaData MetaData
 	var linkCount int
 	var userID, groupID string
-
-	system := runtime.GOOS
 
 	// Open directory/file for reading
 	file, err := os.Open(path)
@@ -40,50 +37,29 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 	// Retrieve directory/file name and append to fileList
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
-		if system != "windows" {
-			fileMetaData, err = RetrieveMetaData(path + "/" + entry.Name())
-			if err != nil {
-				log.Fatal(err)
-			}
-			linkCount = fileMetaData.HardLinkCount
-			userID = fileMetaData.UserID
-			groupID = fileMetaData.GroupID
+		fileMetaData, err = RetrieveMetaData(path + "/" + entry.Name())
+		if err != nil {
+			log.Fatal(err)
 		}
+		linkCount = fileMetaData.HardLinkCount
+		userID = fileMetaData.UserID
+		groupID = fileMetaData.GroupID
 
 		if entry.IsDir() {
-			// Append result for windows systems
-			// Wrap text in bright blue
-			if system == "windows" {
-				// ignore hidden directories
-				if entry.Name()[0] == '.' && !includeHidden {
-					continue
-				}
-				doc.Index = fmt.Sprintf("%v\\", strings.ToLower(entry.Name()))
-				doc.DocName = "\033[01;34m" + entry.Name() + "\033[0m" + "\\"
-				doc.ModTime = entry.ModTime().String()
-				doc.DocPerm = fmt.Sprintf("%v '-' '-' '-' %d %s \033[01;34m%v\033[0m//", entry.Mode().Perm().String(), entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
-
-				// Append 'doc' to fileList
-				ResultList = append(ResultList, doc)
-
-				// Append result for other systems
-			} else {
-				// ignore hidden directories
-				if IsHidden(entry.Name()) && !includeHidden {
-					continue
-				}
-
-				doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden)
-				doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
-				doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
-				doc.ModTime = entry.ModTime().String()
-				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
-
-				// Append 'doc' to fileList
-				ResultList = append(ResultList, doc)
-				doc = FileInfo{}
-
+			// ignore hidden directories
+			if IsHidden(entry.Name()) && !includeHidden {
+				continue
 			}
+
+			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden)
+			doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
+			doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
+			doc.ModTime = entry.ModTime().String()
+			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
+
+			// Append 'doc' to fileList
+			ResultList = append(ResultList, doc)
+			doc = FileInfo{}
 
 			// Append result for file types
 		} else {
