@@ -8,5 +8,8 @@ import "fmt"
 func UnravelFiles(files []FileInfo) {
 	for i := range files {
 		fmt.Println(files[i].DocName)
+		if len(files[i].RecursiveList) > 0 {
+			UnravelFiles(files[i].RecursiveList)
+		}
 	}
 }
