@@ -30,12 +30,10 @@ func main() {
 
 		fmt.Println("Recursive List:")
 		if len(files[i].RecursiveList) > 0 {
-			internal.UnravelFiles(files[i].RecursiveList)
+			fmt.Println(internal.UnravelFiles("./" + files[i].DocName, "", files[i].RecursiveList))
 		}
-		//fmt.Println(files[i].RecursiveList)
 		fmt.Println()
 		fmt.Println()
 	}
-	//fmt.Println(files)
 	fmt.Println(flag)
 }
