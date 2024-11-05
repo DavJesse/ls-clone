@@ -12,23 +12,19 @@ func UnravelFiles(dirName, indent string, files []FileInfo) string {
 	result.WriteString(dirName + ":\n")
 
 	for i, file := range files {
-		result.WriteString(indent)
-		result.WriteString(file.DocName)
+		result.WriteString(file.DocName) // Append the file name
 
 		if i < len(files)-1 {
-			result.WriteString("    ")
+			result.WriteString(indent) // Add indentation for subsequent files
 		} else if i == len(files)-1 {
-			result.WriteString("\n")
+			result.WriteString("\n") // Add a newline for the last file
 		}
-		if files[i].RecursiveList != nil || len(files[i].RecursiveList) > 0 {
 
-			result.WriteString("\n")
+		// Recursively handle subdirectories if present
+		if files[i].RecursiveList != nil || len(files[i].RecursiveList) > 0 {
+			result.WriteString("\n") // Add a newline for subdirectories
 			subResult := UnravelFiles(dirName+file.DocName, indent, file.RecursiveList)
 			result.WriteString(subResult)
-
-			if i < len(files)-1 {
-				result.WriteString("\n")
-			}
 		}
 	}
 	return result.String()
