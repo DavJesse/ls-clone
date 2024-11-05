@@ -16,7 +16,7 @@ func UnravelFiles(dirName, indent string, files []FileInfo) string {
 		result.WriteString(file.DocName)
 
 		if i < len(files)-1 {
-			result.WriteString("\t")
+			result.WriteString("    ")
 		} else if i == len(files)-1 {
 			result.WriteString("\n")
 		}
