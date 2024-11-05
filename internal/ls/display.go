@@ -8,6 +8,7 @@ import (
 )
 
 func UnravelFiles(dirName, indent string, files []FileInfo) string {
+	var index []int
 	var result strings.Builder
 	result.WriteString(dirName + ":\n")
 
@@ -22,10 +23,14 @@ func UnravelFiles(dirName, indent string, files []FileInfo) string {
 
 		// Recursively handle subdirectories if present
 		if files[i].RecursiveList != nil || len(files[i].RecursiveList) > 0 {
-			result.WriteString("\n") // Add a newline for subdirectories
-			subResult := UnravelFiles(dirName+file.DocName, indent, file.RecursiveList)
-			result.WriteString(subResult)
+			index = append(index, i)
 		}
+	}
+
+	for i := range index {
+		result.WriteString("\n") // Add a newline for subdirectories
+		subResult := UnravelFiles(dirName+files[i].DocName, indent, files[i].RecursiveList)
+		result.WriteString(subResult)
 	}
 	return result.String()
 }
