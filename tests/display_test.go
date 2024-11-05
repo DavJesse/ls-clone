@@ -35,3 +35,34 @@ func TestUnravelFiles_FlatDirectory(t *testing.T) {
 		t.Errorf("UnravelFiles returned incorrect result.\nExpected:\n%s\nGot:\n%s", expected, result)
 	}
 }
+
+// Test nested directories
+func TestUnravelFiles_NestedDirectories(t *testing.T) {
+	// Create a mock directory structure
+	files := []internal.FileInfo{
+		{DocName: "file1.txt"},
+		{DocName: "dir1", RecursiveList: []internal.FileInfo{
+			{DocName: "file2.txt"},
+			{DocName: "subdir1", RecursiveList: []internal.FileInfo{
+				{DocName: "file3.txt"},
+			}},
+		}},
+		{DocName: "file4.txt"},
+	}
+
+	expected := `.:
+file1.txt  dir1  file4.txt
+
+./dir1:
+file2.txt  subdir1
+
+./dir1/subdir1:
+file3.txt
+`
+
+	result := internal.UnravelFiles(".", "  ", files)
+
+	if result != expected {
+		t.Errorf("UnravelFiles returned unexpected result.\nExpected:\n%s\nGot:\n%s", expected, result)
+	}
+}
