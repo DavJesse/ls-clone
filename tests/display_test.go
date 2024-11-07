@@ -41,9 +41,9 @@ func TestUnravelFiles_NestedDirectories(t *testing.T) {
 	// Create a mock directory structure
 	files := []internal.FileInfo{
 		{DocName: "file1.txt"},
-		{DocName: "dir1", RecursiveList: []internal.FileInfo{
+		{DocName: "dir1/", RecursiveList: []internal.FileInfo{
 			{DocName: "file2.txt"},
-			{DocName: "subdir1", RecursiveList: []internal.FileInfo{
+			{DocName: "subdir1/", RecursiveList: []internal.FileInfo{
 				{DocName: "file3.txt"},
 			}},
 		}},
