@@ -120,3 +120,13 @@ func TestSortArgs_ExcessiveArguments(t *testing.T) {
 		}
 	}
 }
+
+// Test empty directory
+func TestSortByEmptyDir_EmptyArray(t *testing.T) {
+	input := []internal.FileInfo{}
+	result := internal.SortByEmptyDir(input)
+
+	if len(result) != 0 {
+		t.Errorf("Expected empty array, got array of length %d", len(result))
+	}
+}
