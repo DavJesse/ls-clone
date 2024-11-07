@@ -178,3 +178,25 @@ func TestSortByEmptyDir_AllNil(t *testing.T) {
 }
 
 // Test directories with non-nil Recursive lists
+func TestSortByEmptyDir_AllNonNilRecursiveList(t *testing.T) {
+	input := []internal.FileInfo{
+		{DocName: "dir1", RecursiveList: []internal.FileInfo{{DocName: "file1"}}},
+		{DocName: "dir2", RecursiveList: []internal.FileInfo{{DocName: "file2"}}},
+		{DocName: "dir3", RecursiveList: []internal.FileInfo{{DocName: "file3"}}},
+	}
+
+	result := internal.SortByEmptyDir(input)
+
+	for i, file := range result {
+		if file.RecursiveList == nil {
+			t.Errorf("Expected non-nil RecursiveList at index %d, but got nil", i)
+		}
+		if file.DocName != input[i].DocName {
+			t.Errorf("Expected file name %s at index %d, but got %s", input[i].DocName, i, file.DocName)
+		}
+	}
+
+	if len(result) != len(input) {
+		t.Errorf("Expected result length %d, but got %d", len(input), len(result))
+	}
+}
