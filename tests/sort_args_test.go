@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"log"
 	"strings"
 	"testing"
 
@@ -256,6 +255,39 @@ func TestSortByEmptyDir_NilRecursiveListToBeginning(t *testing.T) {
 	for i := range expected {
 		if result[i].DocName != expected[i].DocName || (result[i].RecursiveList == nil) != (expected[i].RecursiveList == nil) {
 			t.Errorf("At index %d, expected %v, got %v", i, expected[i], result[i])
+		}
+	}
+}
+
+func TestSortByEmptyDir_AlternatingNilAndNonNil(t *testing.T) {
+	input := []internal.FileInfo{
+		{DocName: "file1.txt", RecursiveList: nil},
+		{DocName: "dir1", RecursiveList: []internal.FileInfo{{DocName: "subfile1.txt"}}},
+		{DocName: "file2.txt", RecursiveList: nil},
+		{DocName: "dir2", RecursiveList: []internal.FileInfo{{DocName: "subfile2.txt"}}},
+		{DocName: "file3.txt", RecursiveList: nil},
+	}
+
+	expected := []internal.FileInfo{
+		{DocName: "file1.txt", RecursiveList: nil},
+		{DocName: "file2.txt", RecursiveList: nil},
+		{DocName: "file3.txt", RecursiveList: nil},
+		{DocName: "dir1", RecursiveList: []internal.FileInfo{{DocName: "subfile1.txt"}}},
+		{DocName: "dir2", RecursiveList: []internal.FileInfo{{DocName: "subfile2.txt"}}},
+	}
+
+	result := internal.SortByEmptyDir(input)
+
+	if len(result) != len(expected) {
+		t.Errorf("Expected result length %d, got %d", len(expected), len(result))
+	}
+
+	for i, file := range result {
+		if file.DocName != expected[i].DocName {
+			t.Errorf("At index %d, expected DocName %s, got %s", i, expected[i].DocName, file.DocName)
+		}
+		if (file.RecursiveList == nil) != (expected[i].RecursiveList == nil) {
+			t.Errorf("At index %d, expected RecursiveList nil status %v, got %v", i, expected[i].RecursiveList == nil, file.RecursiveList == nil)
 		}
 	}
 }
