@@ -16,6 +16,8 @@ func SortByEmptyDir(files []FileInfo) []FileInfo {
 		} else if files[point1].RecursiveList != nil && files[point2].RecursiveList == nil {
 			files[point1], files[point2] = files[point2], files[point1]
 			point1++
+		} else if files[point1].RecursiveList != nil && files[point2].RecursiveList != nil {
+			point1 += 2
 		}
 	}
 	return files
