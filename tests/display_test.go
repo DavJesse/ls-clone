@@ -51,12 +51,12 @@ func TestUnravelFiles_NestedDirectories(t *testing.T) {
 	}
 
 	expected := `.:
-file1.txt  dir1  file4.txt
+file1.txt  dir1/  file4.txt
 
-./dir1:
-file2.txt  subdir1
+./dir1/:
+file2.txt  subdir1/
 
-./dir1/subdir1:
+./dir1/subdir1/:
 file3.txt
 `
 
