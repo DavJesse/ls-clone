@@ -130,3 +130,51 @@ func TestSortByEmptyDir_EmptyArray(t *testing.T) {
 		t.Errorf("Expected empty array, got array of length %d", len(result))
 	}
 }
+
+// Test single element in directory
+func TestSortByEmptyDir_SingleElement(t *testing.T) {
+	input := []internal.FileInfo{
+		{DocName: "file1.txt", RecursiveList: nil},
+	}
+
+	result := internal.SortByEmptyDir(input)
+
+	if len(result) != 1 {
+		t.Errorf("Expected result length 1, got %d", len(result))
+	}
+
+	if result[0].DocName != "file1.txt" {
+		t.Errorf("Expected DocName 'file1.txt', got '%s'", result[0].DocName)
+	}
+
+	if result[0].RecursiveList != nil {
+		t.Errorf("Expected RecursiveList to be nil, got non-nil")
+	}
+}
+
+// Test directories with nil Recursive lists
+func TestSortByEmptyDir_AllNil(t *testing.T) {
+	input := []internal.FileInfo{
+		{DocName: "file1.txt", RecursiveList: nil},
+		{DocName: "file2.txt", RecursiveList: nil},
+		{DocName: "file3.txt", RecursiveList: nil},
+		{DocName: "file4.txt", RecursiveList: nil},
+	}
+
+	result := internal.SortByEmptyDir(input)
+
+	if len(result) != len(input) {
+		t.Errorf("Expected result length %d, got %d", len(input), len(result))
+	}
+
+	for i, file := range result {
+		if file.DocName != input[i].DocName {
+			t.Errorf("Expected file at index %d to be %s, got %s", i, input[i].DocName, file.DocName)
+		}
+		if file.RecursiveList != nil {
+			t.Errorf("Expected RecursiveList to be nil for file %s", file.DocName)
+		}
+	}
+}
+
+// Test directories with non-nil Recursive lists
