@@ -5,20 +5,18 @@
 package internal
 
 func SortByEmptyDir(files []FileInfo) []FileInfo {
-	point1 := 0
-	point2 := point1 + 1
+	if len(files) <= 1 {
+		return files
+	}
 
-	for point1 < len(files) && point2 < len(files) {
-		if files[point1].RecursiveList == nil && files[point2].RecursiveList == nil {
-			point1 += 2
-		} else if files[point1].RecursiveList == nil && files[point2].RecursiveList != nil {
-			point1++
-		} else if files[point1].RecursiveList != nil && files[point2].RecursiveList == nil {
-			files[point1], files[point2] = files[point2], files[point1]
-			point1++
-		} else if files[point1].RecursiveList != nil && files[point2].RecursiveList != nil {
-			point1 += 2
+	var emptDir, nonEmptDir []FileInfo
+	for i := range files {
+		if files[i].RecursiveList == nil {
+			emptDir = append(emptDir, files[i])
+		} else {
+			nonEmptDir = append(nonEmptDir, files[i])
 		}
 	}
-	return files
+	return append(emptDir, nonEmptDir...)
+
 }
