@@ -26,6 +26,9 @@ func UnravelFiles(dirName, indent string, files []FileInfo) string {
 	}
 
 	for _, file := range files {
+		if dirName == "." {
+			dirName += "/"
+		}
 		// Recursively handle subdirectories if present
 		if file.RecursiveList != nil {
 			result.WriteString("\n") // Add a newline for subdirectories
