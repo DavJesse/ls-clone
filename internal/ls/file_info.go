@@ -53,7 +53,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 
 			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden)
 			doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
-			doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
+			doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m", entry.Name())
 			doc.ModTime = entry.ModTime().String()
 			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
 
