@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	files := internal.RetrieveFileInfo(path, false)
+	files := internal.RetrieveFileInfo(path, false, false)
 	for i := range files {
 		fmt.Print("Index: ")
 		fmt.Println(files[i].Index)

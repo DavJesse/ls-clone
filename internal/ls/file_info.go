@@ -15,7 +15,7 @@ import (
 	"syscall"
 )
 
-func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
+func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo {
 	var ResultList []FileInfo
 	var doc FileInfo
 	var fileMetaData MetaData
@@ -28,6 +28,13 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 		log.Fatal(err)
 	}
 	defer file.Close()
+
+	if !rootIncluded {
+		doc.RecursiveList = append(doc.RecursiveList, retrieveRootInfo(path, includeHidden)...)
+		ResultList = append(ResultList, doc)
+		doc = FileInfo{}
+		rootIncluded = true
+	}
 
 	entries, err := file.Readdir(-1)
 	if err != nil {
@@ -51,7 +58,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 				continue
 			}
 
-			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden)
+			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden, rootIncluded)
 			doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 			doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m", entry.Name())
 			doc.ModTime = entry.ModTime().String()
@@ -90,6 +97,51 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 	// Case sensitivity is NOT taken in cosideration, as ls does
 	sort.Sort(Alphabetic(ResultList))
 
+	return ResultList
+}
+
+func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
+	var ResultList []FileInfo
+	var doc FileInfo
+	var linkCount int
+	var userID, groupID string
+
+	dirInfo, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dirInfo.Close()
+
+	files, err := dirInfo.Readdir(-1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		// Skip hidden files and directories
+		if IsHidden(file.Name()) && !includeHidden {
+			continue
+		}
+
+		metaData, err := RetrieveMetaData(path + "/" + file.Name())
+		if err != nil {
+			log.Fatal(err)
+		}
+		// Retrieve root metadata
+		linkCount = metaData.HardLinkCount
+		userID = metaData.UserID
+		groupID = metaData.GroupID
+
+		if file.IsDir() {
+			doc.DocName = file.Name()
+		} else {
+			doc.DocName = file.Name()
+		}
+		doc.Index = strings.ToLower(file.Name())
+		doc.ModTime = file.ModTime().String()
+		doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", file.Mode().Perm().String(), linkCount, userID, groupID, file.Size(), file.ModTime().Format("Jan 02 15:04"), file.Name())
+		ResultList = append(ResultList, doc)
+	}
 	return ResultList
 }
 
