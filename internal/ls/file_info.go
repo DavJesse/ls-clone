@@ -190,3 +190,32 @@ func IsExecutable(fileInfo os.FileInfo) bool {
 func IsHidden(path string) bool {
 	return strings.HasPrefix(path, ".")
 }
+
+func AddColor(file string, kind string) string {
+	reset := "\033[0m"
+	colorLibrary := map[string]string{
+		"dir":             "\033[01;34m",
+		"sym":             "\033[01;36m",
+		"pipe":            "\033[33m",
+		"soc":             "\033[01;35m",
+		"exec":            "\033[01;32m",
+		"bloc spec":       "\033[01;33m",
+		"char spec":       "\033[01;33m",
+		"set uid":         "\033[01;37;41m",
+		"set gid":         "\033[01;30;43m",
+		"dir stic bit":    "\033[01;34;42m",
+		"dir nonstic bit": "\033[01;34;43m",
+		"comp":            "\033[01;31mm",
+		"img":             "\033[01;35m",
+		"vid":             "\033[01;36m",
+		"orph sym":        "\033[01;31m",
+	}
+
+	code, exists := colorLibrary[kind]
+
+	if exists {
+		return fmt.Sprintf("%s%s%s", code, file, reset)
+	} else {
+		return file
+	}
+}
