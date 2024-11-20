@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"log"
 	"os"
 	"strings"
 	"testing"
@@ -120,8 +121,10 @@ func TestRetrieveFileInfo_CurrentDir(t *testing.T) {
 	var result []internal.FileInfo
 	var point int
 
-	result = internal.RetrieveFileInfo(".", false)
+	result = internal.RetrieveFileInfo(".", false, true)
+	log.Printf("%#v", result)
 	expect = []internal.FileInfo{
+		{DocName: "display_test.go"},
 		{DocName: "flag_test.go"},
 		{DocName: "ls_test.go"},
 		{DocName: "path_test.go"},
@@ -144,17 +147,17 @@ func TestRetrieveFileInfo_NonCurrentDir(t *testing.T) {
 	var result []internal.FileInfo
 	var point int
 
-	result = internal.RetrieveFileInfo("../", false)
+	result = internal.RetrieveFileInfo("../", false, true)
 	expect = []internal.FileInfo{
-		{DocName: "\033[01;34mcmd\033[0m/"},
+		{DocName: "\033[01;34mcmd\033[0m"},
 		{DocName: "\033[01;32mcommit.sh\033[0m*"},
 		{DocName: "go.mod"},
-		{DocName: "\033[01;34minternal\033[0m/"},
+		{DocName: "\033[01;34minternal\033[0m"},
 		{DocName: "LICENSE"},
 		{DocName: "\033[01;32mpush_both.sh\033[0m*"},
 		{DocName: "README.md"},
 		{DocName: "\033[01;32mrun_my_ls.sh\033[0m*"},
-		{DocName: "\033[01;34mtests\033[0m/"},
+		{DocName: "\033[01;34mtests\033[0m"},
 	}
 
 	for point < len(result) && point < len(expect) {
