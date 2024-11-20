@@ -87,3 +87,24 @@ func TestAddColor(t *testing.T) {
 		point++
 	}
 }
+
+func TestRemoveColor(t *testing.T) {
+	expect := []string{"non", "exec", "img", "sym", "set gid"}
+	subject := []string{
+		"non",
+		"\033[01;32mexec\033[0m",
+		"\033[01;35mimg\033[0m",
+		"\033[01;36msym\033[0m",
+		"\033[01;30;43mset gid\033[0m",
+	}
+
+	var point int
+	for point < len(subject) && point < len(expect) {
+		if internal.AddColor(subject[point], subject[point]) != expect[point] {
+			t.Errorf("Expected: %s, Got: %s", expect[point], internal.AddColor(subject[point], subject[point]))
+			t.Errorf("TestAddColor failed at index: %d", point)
+			t.FailNow()
+		}
+		point++
+	}
+}
