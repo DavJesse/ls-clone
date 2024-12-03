@@ -283,3 +283,15 @@ func IsStickyBitSet(file fs.FileInfo) bool {
 func IsStickyBitNotSet(file fs.FileInfo) bool {
 	return file.IsDir() && file.Mode()&os.ModeSticky == 0
 }
+
+func IsCompressed(file fs.FileInfo) bool {
+	extensions := []string{".zip", ".gz", ".bz2", ".7z", ".xz", ".tar.gz"}
+
+	// Check file extension
+	for i := range extensions {
+		if strings.HasSuffix(file.Name(), extensions[i]) {
+			return true
+		}
+	}
+	return false
+}
