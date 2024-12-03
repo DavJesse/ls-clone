@@ -275,3 +275,7 @@ func IsSetUserIDSet(file fs.FileInfo) bool {
 func IsSetGroupIDSet(file fs.FileInfo) bool {
 	return file.Mode()&os.ModeSetgid != 0
 }
+
+func IsStickyBitSet(file fs.FileInfo) bool {
+	return file.IsDir() && file.Mode()&os.ModeSticky != 0
+}
