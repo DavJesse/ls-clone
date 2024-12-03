@@ -263,3 +263,7 @@ func IsSocket(file fs.FileInfo) bool {
 func IsBlockSpecial(file fs.FileInfo) bool {
 	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFBLK
 }
+
+func IsCharacterSpecial(file fs.FileInfo) bool {
+	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFCHR
+}
