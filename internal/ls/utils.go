@@ -8,6 +8,7 @@ type FileInfo struct {
 	PlusHidden    string
 	ReverseList   string
 	ModTime       string
+	FileType      string
 }
 
 type ReverseAlpha []FileInfo
