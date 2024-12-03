@@ -307,3 +307,15 @@ func IsImage(file fs.FileInfo) bool {
 	}
 	return false
 }
+
+func IsVideo(file fs.FileInfo) bool {
+	extensions := []string{".mp4", ".mov", ".avi", ".mkv", ".wmv", ".flv", "webm", ".mpg", "mpeg", "m2ts", ".vob"}
+
+	// Check file extension
+	for i := range extensions {
+		if strings.HasSuffix(file.Name(), extensions[i]) {
+			return true
+		}
+	}
+	return false
+}
