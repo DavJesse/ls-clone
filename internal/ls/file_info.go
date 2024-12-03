@@ -295,3 +295,15 @@ func IsCompressed(file fs.FileInfo) bool {
 	}
 	return false
 }
+
+func IsImage(file fs.FileInfo) bool {
+	extensions := []string{".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", "tif", ".ico", "webp"}
+
+	// Check file extension
+	for i := range extensions {
+		if strings.HasSuffix(file.Name(), extensions[i]) {
+			return true
+		}
+	}
+	return false
+}
