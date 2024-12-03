@@ -267,3 +267,11 @@ func IsBlockSpecial(file fs.FileInfo) bool {
 func IsCharacterSpecial(file fs.FileInfo) bool {
 	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFCHR
 }
+
+func IsSetUserIDSet(file fs.FileInfo) bool {
+	return file.Mode()&os.ModeSetuid != 0
+}
+
+func IsSetGroupIDSet(file fs.FileInfo) bool {
+	return file.Mode()&os.ModeSetgid != 0
+}
