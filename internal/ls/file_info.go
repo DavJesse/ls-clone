@@ -279,3 +279,7 @@ func IsSetGroupIDSet(file fs.FileInfo) bool {
 func IsStickyBitSet(file fs.FileInfo) bool {
 	return file.IsDir() && file.Mode()&os.ModeSticky != 0
 }
+
+func IsStickyBitNotSet(file fs.FileInfo) bool {
+	return file.IsDir() && file.Mode()&os.ModeSticky == 0
+}
