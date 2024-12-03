@@ -15,12 +15,13 @@ import (
 	"syscall"
 )
 
-func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
+func RetrieveFileInfo(path string, includeHidden bool, metaData *MetaData) []FileInfo {
 	var ResultList []FileInfo
 	var doc FileInfo
 	var fileMetaData MetaData
 	var linkCount int
 	var userID, groupID string
+	var blocks int64
 
 	// Open directory/file for reading
 	file, err := os.Open(path)
@@ -44,6 +45,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 		linkCount = fileMetaData.HardLinkCount
 		userID = fileMetaData.UserID
 		groupID = fileMetaData.GroupID
+		blocks += fileMetaData.Block
 
 		if entry.IsDir() {
 			// ignore hidden directories
@@ -51,7 +53,7 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 				continue
 			}
 
-			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden)
+			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden, metaData)
 			doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 			doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m/", entry.Name())
 			doc.ModTime = entry.ModTime().String()
@@ -90,6 +92,11 @@ func RetrieveFileInfo(path string, includeHidden bool) []FileInfo {
 	// Case sensitivity is NOT taken in cosideration, as ls does
 	sort.Sort(Alphabetic(ResultList))
 
+	// Update the global block count in the metadata
+	if metaData != nil {
+		metaData.Block += blocks
+	}
+
 	return ResultList
 }
 
@@ -110,6 +117,7 @@ func RetrieveMetaData(path string) (MetaData, error) {
 	result.HardLinkCount = int(stat.Nlink)
 	groupID := strconv.Itoa(int(stat.Gid))
 	userID := strconv.Itoa(int(stat.Uid))
+	result.Block = stat.Blocks
 
 	// Extract user
 	u, err1 := user.LookupId(userID)

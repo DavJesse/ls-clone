@@ -39,7 +39,8 @@ func UnravelFiles(dirName, indent string, files []FileInfo) string {
 	return result.String()
 }
 
-func LongList(files []FileInfo) {
+func LongList(files []FileInfo, metaData *MetaData) {
+	fmt.Printf("total %d\n", metaData.Block/4)
 	for _, file := range files {
 		fmt.Println(file.DocPerm)
 	}
