@@ -6,6 +6,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"os/user"
@@ -245,4 +246,20 @@ func RemoveColor(file string) string {
 
 func ContainsColor(file string) bool {
 	return strings.Contains(file, "\x1b")
+}
+
+func IsSymLink(file fs.FileInfo) bool {
+	return file.Mode()&os.ModeSymlink != 0
+}
+
+func IsPipe(file fs.FileInfo) bool {
+	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFIFO
+}
+
+func IsSocket(file fs.FileInfo) bool {
+	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFSOCK
+}
+
+func IsBlockSpecial(file fs.FileInfo) bool {
+	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFBLK
 }
