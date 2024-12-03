@@ -252,6 +252,16 @@ func IsSymLink(file fs.FileInfo) bool {
 	return file.Mode()&os.ModeSymlink != 0
 }
 
+func IsOrphanSymLink(file fs.FileInfo, path string) bool {
+	if IsSymLink(file) {
+		_, err := os.Stat(path)
+		if err != nil && os.IsNotExist(err) {
+			return true
+		}
+	}
+	return false
+}
+
 func IsPipe(file fs.FileInfo) bool {
 	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFIFO
 }
