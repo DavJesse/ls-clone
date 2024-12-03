@@ -223,6 +223,10 @@ func AddColor(file string, kind string) string {
 func RemoveColor(file string) string {
 	var start, end int
 
+	if !ContainsColor(file) {
+		return file
+	}
+
 	for i, v := range file {
 		// mark character after first'm' as the start of file name
 		if v == 'm' && start == 0 {
@@ -230,11 +234,15 @@ func RemoveColor(file string) string {
 		}
 
 		// mark character after last 'm' as the end of file name
-		if v == '\033' && start != 0 {
+		if v == '\x1b' && start != 0 {
 			end = i
 			break
 		}
 	}
-	return file[start:end]
 
+	return file[start:end]
+}
+
+func ContainsColor(file string) bool {
+	return strings.Contains(file, "\x1b")
 }

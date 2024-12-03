@@ -100,8 +100,8 @@ func TestRemoveColor(t *testing.T) {
 
 	var point int
 	for point < len(subject) && point < len(expect) {
-		if internal.AddColor(subject[point], subject[point]) != expect[point] {
-			t.Errorf("Expected: %s, Got: %s", expect[point], internal.AddColor(subject[point], subject[point]))
+		if internal.RemoveColor(subject[point]) != expect[point] {
+			t.Errorf("Expected: %s, Got: %v", expect[point], internal.AddColor(subject[point], subject[point]))
 			t.Errorf("TestAddColor failed at index: %d", point)
 			t.FailNow()
 		}
