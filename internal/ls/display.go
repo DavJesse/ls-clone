@@ -5,6 +5,7 @@ package internal
 
 import (
 	"strings"
+	"fmt"
 )
 
 func UnravelFiles(dirName, indent string, files []FileInfo) string {
@@ -36,4 +37,10 @@ func UnravelFiles(dirName, indent string, files []FileInfo) string {
 	}
 
 	return result.String()
+}
+
+func LongList(files []FileInfo) {
+	for _, file := range files {
+		fmt.Println(file.DocPerm)
+	}
 }
