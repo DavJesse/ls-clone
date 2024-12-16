@@ -88,6 +88,7 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 	sort.Sort(Alphabetic(ResultList))
 	return ResultList
 }
+
 func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 	var ResultList []FileInfo
 	var doc FileInfo
@@ -127,6 +128,7 @@ func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 	}
 	return ResultList
 }
+
 func RetrieveMetaData(path string) (MetaData, error) {
 	var result MetaData
 	info, err := os.Lstat(path)
@@ -156,6 +158,7 @@ func RetrieveMetaData(path string) (MetaData, error) {
 	result.GroupID = g.Name
 	return result, err
 }
+
 func IsExecutable(fileInfo os.FileInfo) bool {
 	mode := fileInfo.Mode()
 	return mode&0o100 != 0 || mode&0o010 != 0 || mode&0o001 != 0
@@ -165,6 +168,7 @@ func IsExecutable(fileInfo os.FileInfo) bool {
 func IsHidden(path string) bool {
 	return strings.HasPrefix(path, ".")
 }
+
 func AddColor(file string, kind string) string {
 	reset := "\033[0m"
 	colorLibrary := map[string]string{
@@ -191,6 +195,7 @@ func AddColor(file string, kind string) string {
 		return file
 	}
 }
+
 func RemoveColor(file string) string {
 	var start, end int
 	if !ContainsColor(file) {
@@ -209,12 +214,15 @@ func RemoveColor(file string) string {
 	}
 	return file[start:end]
 }
+
 func ContainsColor(file string) bool {
 	return strings.Contains(file, "\x1b")
 }
+
 func IsSymLink(file fs.FileInfo) bool {
 	return file.Mode()&os.ModeSymlink != 0
 }
+
 func IsOrphanSymLink(file fs.FileInfo, path string) bool {
 	if IsSymLink(file) {
 		_, err := os.Stat(path)
@@ -224,30 +232,39 @@ func IsOrphanSymLink(file fs.FileInfo, path string) bool {
 	}
 	return false
 }
+
 func IsPipe(file fs.FileInfo) bool {
 	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFIFO
 }
+
 func IsSocket(file fs.FileInfo) bool {
 	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFSOCK
 }
+
 func IsBlockSpecial(file fs.FileInfo) bool {
 	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFBLK
 }
+
 func IsCharacterSpecial(file fs.FileInfo) bool {
 	return (file.Mode() & syscall.S_IFMT) == syscall.S_IFCHR
 }
+
 func IsSetUserIDSet(file fs.FileInfo) bool {
 	return file.Mode()&os.ModeSetuid != 0
 }
+
 func IsSetGroupIDSet(file fs.FileInfo) bool {
 	return file.Mode()&os.ModeSetgid != 0
 }
+
 func IsStickyBitSet(file fs.FileInfo) bool {
 	return file.IsDir() && file.Mode()&os.ModeSticky != 0
 }
+
 func IsStickyBitNotSet(file fs.FileInfo) bool {
 	return file.IsDir() && file.Mode()&os.ModeSticky == 0
 }
+
 func IsCompressed(file fs.FileInfo) bool {
 	extensions := []string{".zip", ".gz", ".bz2", ".7z", ".xz", ".tar.gz"}
 	// Check file extension
@@ -258,6 +275,7 @@ func IsCompressed(file fs.FileInfo) bool {
 	}
 	return false
 }
+
 func IsImage(file fs.FileInfo) bool {
 	extensions := []string{".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", "tif", ".ico", "webp"}
 	// Check file extension
@@ -268,6 +286,7 @@ func IsImage(file fs.FileInfo) bool {
 	}
 	return false
 }
+
 func IsVideo(file fs.FileInfo) bool {
 	extensions := []string{".mp4", ".mov", ".avi", ".mkv", ".wmv", ".flv", "webm", ".mpg", "mpeg", "m2ts", ".vob"}
 	// Check file extension
