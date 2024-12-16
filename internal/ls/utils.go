@@ -19,6 +19,7 @@ type MetaData struct {
 	HardLinkCount int
 	UserID        string
 	GroupID       string
+	Block         int64
 }
 
 type DirFile struct {
