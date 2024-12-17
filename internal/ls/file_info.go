@@ -297,3 +297,41 @@ func IsVideo(file fs.FileInfo) bool {
 	}
 	return false
 }
+
+func Update_Color_N_Permision(file fs.FileInfo) (string, string) {
+	// Identify file type and update color and file permissions
+	switch {
+	case file.IsDir():
+		return fmt.Sprintf("%s%s%s", "\033[01;34m", file.Name(), Reset), "d" + file.Mode().Perm().String()
+	case IsSymLink(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;36m", file, Reset), "l" + file.Mode().Perm().String()
+	case IsPipe(file):
+		return fmt.Sprintf("%s%s%s", "\033[33m", file, Reset), "p" + file.Mode().Perm().String()
+	case IsSocket(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;35m", file, Reset), "s" + file.Mode().Perm().String()
+	case IsBlockSpecial(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "b" + file.Mode().Perm().String()
+	case IsExecutable(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;32m", file, Reset), file.Mode().Perm().String()
+	case IsCharacterSpecial(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "c" + file.Mode().Perm().String()
+	case IsSetGroupIDSet(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;37;41m", file, Reset), file.Mode().Perm().String()
+	case IsSetUserIDSet(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;37;41m", file, Reset), file.Mode().Perm().String()
+	case IsStickyBitSet(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;34;42m", file, Reset), file.Mode().Perm().String()
+	case IsStickyBitNotSet(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;34;43m", file, Reset), file.Mode().Perm().String()
+	case IsCompressed(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;31mm", file, Reset), file.Mode().Perm().String()
+	case IsImage(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;35m", file, Reset), file.Mode().Perm().String()
+	case IsVideo(file):
+		return fmt.Sprintf("%s%s%s", "\033[01;36m", file, Reset), file.Mode().Perm().String()
+	case IsOrphanSymLink(file, file.Name()):
+		return fmt.Sprintf("%s%s%s", "\033[01;31m", file, Reset), file.Mode().Perm().String()
+	default:
+		return file.Name(), file.Mode().Perm().String()
+	}
+}
