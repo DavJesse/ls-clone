@@ -22,22 +22,26 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 	var fileMetaData MetaData
 	var linkCount int
 	var userID, groupID string
+
 	// Open directory/file for reading
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
+
 	if !rootIncluded {
 		doc.RecursiveList = append(doc.RecursiveList, retrieveRootInfo(path, includeHidden)...)
 		ResultList = append(ResultList, doc)
 		doc = FileInfo{}
 		rootIncluded = true
 	}
+
 	entries, err := file.Readdir(-1)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	// Retrieve directory/file name and append to fileList
 	// For directories, we add '/' or '\' depending on opperating system
 	for _, entry := range entries {
@@ -45,9 +49,11 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		linkCount = fileMetaData.HardLinkCount
 		userID = fileMetaData.UserID
 		groupID = fileMetaData.GroupID
+		colorName, permString := Update_Color_N_Permision(entry)
 		if entry.IsDir() {
 			// ignore hidden directories
 			if IsHidden(entry.Name()) && !includeHidden {
@@ -57,7 +63,7 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 			doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
 			doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m", entry.Name())
 			doc.ModTime = entry.ModTime().String()
-			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
+			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", permString, linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), colorName)
 			// Append 'doc' to fileList
 			ResultList = append(ResultList, doc)
 			doc = FileInfo{}
@@ -302,19 +308,19 @@ func Update_Color_N_Permision(file fs.FileInfo) (string, string) {
 	// Identify file type and update color and file permissions
 	switch {
 	case file.IsDir():
-		return fmt.Sprintf("%s%s%s", "\033[01;34m", file.Name(), Reset), "d" + file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;34m", file.Name(), Reset), "d" + file.Mode().Perm().String()[1:]
 	case IsSymLink(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;36m", file, Reset), "l" + file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;36m", file, Reset), "l" + file.Mode().Perm().String()[1:]
 	case IsPipe(file):
-		return fmt.Sprintf("%s%s%s", "\033[33m", file, Reset), "p" + file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[33m", file, Reset), "p" + file.Mode().Perm().String()[1:]
 	case IsSocket(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;35m", file, Reset), "s" + file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;35m", file, Reset), "s" + file.Mode().Perm().String()[1:]
 	case IsBlockSpecial(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "b" + file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "b" + file.Mode().Perm().String()[1:]
 	case IsExecutable(file):
 		return fmt.Sprintf("%s%s%s", "\033[01;32m", file, Reset), file.Mode().Perm().String()
 	case IsCharacterSpecial(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "c" + file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "c" + file.Mode().Perm().String()[1:]
 	case IsSetGroupIDSet(file):
 		return fmt.Sprintf("%s%s%s", "\033[01;37;41m", file, Reset), file.Mode().Perm().String()
 	case IsSetUserIDSet(file):
