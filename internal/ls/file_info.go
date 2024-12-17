@@ -62,9 +62,9 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 			}
 			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden, rootIncluded)
 			doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
-			doc.DocName = fmt.Sprintf("\033[01;34m%v\033[0m", entry.Name())
+			doc.DocName = colorName
 			doc.ModTime = entry.ModTime().String()
-			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s \033[01;34m%v\033[0m/", permString, linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), colorName)
+			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %s/", permString, linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), colorName)
 			// Append 'doc' to fileList
 			ResultList = append(ResultList, doc)
 			doc = FileInfo{}
@@ -77,12 +77,11 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 			// Add bright-green color to executable files
 			// Retain default color for non-executable
 			if IsExecutable(entry) {
-				doc.DocName = fmt.Sprintf("\033[01;32m%s\033[0m*", entry.Name())
-				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
+				doc.DocName = fmt.Sprintf("%s*", colorName)
 			} else {
-				doc.DocName = entry.Name()
-				doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", entry.Mode().Perm().String(), linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), entry.Name())
+				doc.DocName = colorName
 			}
+			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", permString, linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), colorName)
 			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
 			doc.ModTime = entry.ModTime().String()
 			// Append 'doc' to fileList
@@ -111,7 +110,7 @@ func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 		log.Fatal(err)
 	}
 	for _, file := range files {
-		color, permString := Update_Color_N_Permision(file)
+		colorName, permString := Update_Color_N_Permision(file)
 		// Skip hidden files and directories
 		if IsHidden(file.Name()) && !includeHidden {
 			continue
@@ -124,14 +123,10 @@ func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 		linkCount = metaData.HardLinkCount
 		userID = metaData.UserID
 		groupID = metaData.GroupID
-		if file.IsDir() {
-			doc.DocName = file.Name()
-		} else {
-			doc.DocName = file.Name()
-		}
+		doc.DocName = colorName
 		doc.Index = strings.ToLower(file.Name())
 		doc.ModTime = file.ModTime().String()
-		doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", permString, linkCount, userID, groupID, file.Size(), file.ModTime().Format("Jan 02 15:04"), color)
+		doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", permString, linkCount, userID, groupID, file.Size(), file.ModTime().Format("Jan 02 15:04"), colorName)
 		ResultList = append(ResultList, doc)
 	}
 	return ResultList
