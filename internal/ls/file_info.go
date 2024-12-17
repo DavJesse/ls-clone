@@ -95,24 +95,29 @@ func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 	var linkCount int
 	var userID, groupID string
 	dirInfo, err := os.Open(path)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer dirInfo.Close()
+
 	files, err := dirInfo.Readdir(-1)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	for _, file := range files {
 		colorName, permString := Update_Color_N_Permision(file)
 		// Skip hidden files and directories
 		if IsHidden(file.Name()) && !includeHidden {
 			continue
 		}
+
 		metaData, err := RetrieveMetaData(path + "/" + file.Name())
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		// Retrieve root metadata
 		linkCount = metaData.HardLinkCount
 		userID = metaData.UserID
