@@ -30,6 +30,7 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 	}
 	defer file.Close()
 
+	// Include files/directories in root directory
 	if !rootIncluded {
 		doc.RecursiveList = append(doc.RecursiveList, retrieveRootInfo(path, includeHidden)...)
 		ResultList = append(ResultList, doc)
@@ -37,6 +38,7 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 		rootIncluded = true
 	}
 
+	// Read all entries in the directory
 	entries, err := file.Readdir(-1)
 	if err != nil {
 		log.Fatal(err)
@@ -54,41 +56,33 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 		userID = fileMetaData.UserID
 		groupID = fileMetaData.GroupID
 		colorName, permString := Update_Color_N_Permision(entry)
-		// fmt.Printf("colorName: %s\n", colorName)
-		if entry.IsDir() {
-			// ignore hidden directories
-			if IsHidden(entry.Name()) && !includeHidden {
-				continue
-			}
-			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden, rootIncluded)
-			doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
-			doc.DocName = colorName
-			doc.ModTime = entry.ModTime().String()
-			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %s/", permString, linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), colorName)
-			// Append 'doc' to fileList
-			ResultList = append(ResultList, doc)
-			doc = FileInfo{}
-			// Append result for file types
-		} else {
-			// ignore hidden files
-			if IsHidden(entry.Name()) && !includeHidden {
-				continue
-			}
-			// Add bright-green color to executable files
-			// Retain default color for non-executable
-			if IsExecutable(entry) {
-				doc.DocName = fmt.Sprintf("%s*", colorName)
-			} else {
-				doc.DocName = colorName
-			}
-			doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", permString, linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), colorName)
-			doc.Index = fmt.Sprintf("%v", strings.ToLower(entry.Name()))
-			doc.ModTime = entry.ModTime().String()
-			// Append 'doc' to fileList
-			ResultList = append(ResultList, doc)
-			doc = FileInfo{}
+
+		// ignore hidden directories
+		if IsHidden(entry.Name()) && !includeHidden {
+			continue
 		}
+
+		// If entry is a directory, recursively retrieve its content
+		if entry.IsDir() {
+			doc.RecursiveList = RetrieveFileInfo(path+"/"+entry.Name(), includeHidden, rootIncluded)
+		}
+
+		// Handle executable files with '*' in their name
+		if !entry.IsDir() && IsExecutable(entry) {
+			doc.DocName = fmt.Sprintf("%s*", colorName)
+		} else {
+			doc.DocName = colorName
+		}
+
+		doc.Index = fmt.Sprintf("%v/", strings.ToLower(entry.Name()))
+		doc.ModTime = entry.ModTime().String()
+		doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %s/", permString, linkCount, userID, groupID, entry.Size(), entry.ModTime().Format("Jan 02 15:04"), colorName)
+
+		// Append 'doc' to fileList
+		ResultList = append(ResultList, doc)
+		doc = FileInfo{}
 	}
+
 	// Sort files and directories lexicographically
 	// Case sensitivity is NOT taken in cosideration, as ls does
 	sort.Sort(Alphabetic(ResultList))
