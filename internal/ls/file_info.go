@@ -54,6 +54,7 @@ func RetrieveFileInfo(path string, includeHidden, rootIncluded bool) []FileInfo 
 		userID = fileMetaData.UserID
 		groupID = fileMetaData.GroupID
 		colorName, permString := Update_Color_N_Permision(entry)
+		// fmt.Printf("colorName: %s\n", colorName)
 		if entry.IsDir() {
 			// ignore hidden directories
 			if IsHidden(entry.Name()) && !includeHidden {
@@ -110,6 +111,7 @@ func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 		log.Fatal(err)
 	}
 	for _, file := range files {
+		color, permString := Update_Color_N_Permision(file)
 		// Skip hidden files and directories
 		if IsHidden(file.Name()) && !includeHidden {
 			continue
@@ -129,7 +131,7 @@ func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 		}
 		doc.Index = strings.ToLower(file.Name())
 		doc.ModTime = file.ModTime().String()
-		doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", file.Mode().Perm().String(), linkCount, userID, groupID, file.Size(), file.ModTime().Format("Jan 02 15:04"), file.Name())
+		doc.DocPerm = fmt.Sprintf("%v %d %v %v %d %s %v", permString, linkCount, userID, groupID, file.Size(), file.ModTime().Format("Jan 02 15:04"), color)
 		ResultList = append(ResultList, doc)
 	}
 	return ResultList
@@ -310,33 +312,33 @@ func Update_Color_N_Permision(file fs.FileInfo) (string, string) {
 	case file.IsDir():
 		return fmt.Sprintf("%s%s%s", "\033[01;34m", file.Name(), Reset), "d" + file.Mode().Perm().String()[1:]
 	case IsSymLink(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;36m", file, Reset), "l" + file.Mode().Perm().String()[1:]
+		return fmt.Sprintf("%s%s%s", "\033[01;36m", file.Name(), Reset), "l" + file.Mode().Perm().String()[1:]
 	case IsPipe(file):
-		return fmt.Sprintf("%s%s%s", "\033[33m", file, Reset), "p" + file.Mode().Perm().String()[1:]
+		return fmt.Sprintf("%s%s%s", "\033[33m", file.Name(), Reset), "p" + file.Mode().Perm().String()[1:]
 	case IsSocket(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;35m", file, Reset), "s" + file.Mode().Perm().String()[1:]
+		return fmt.Sprintf("%s%s%s", "\033[01;35m", file.Name(), Reset), "s" + file.Mode().Perm().String()[1:]
 	case IsBlockSpecial(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "b" + file.Mode().Perm().String()[1:]
+		return fmt.Sprintf("%s%s%s", "\033[01;33m", file.Name(), Reset), "b" + file.Mode().Perm().String()[1:]
 	case IsExecutable(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;32m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;32m", file.Name(), Reset), file.Mode().Perm().String()
 	case IsCharacterSpecial(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;33m", file, Reset), "c" + file.Mode().Perm().String()[1:]
+		return fmt.Sprintf("%s%s%s", "\033[01;33m", file.Name(), Reset), "c" + file.Mode().Perm().String()[1:]
 	case IsSetGroupIDSet(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;37;41m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;37;41m", file.Name(), Reset), file.Mode().Perm().String()
 	case IsSetUserIDSet(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;37;41m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;37;41m", file.Name(), Reset), file.Mode().Perm().String()
 	case IsStickyBitSet(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;34;42m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;34;42m", file.Name(), Reset), file.Mode().Perm().String()
 	case IsStickyBitNotSet(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;34;43m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;34;43m", file.Name(), Reset), file.Mode().Perm().String()
 	case IsCompressed(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;31mm", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;31mm", file.Name(), Reset), file.Mode().Perm().String()
 	case IsImage(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;35m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;35m", file.Name(), Reset), file.Mode().Perm().String()
 	case IsVideo(file):
-		return fmt.Sprintf("%s%s%s", "\033[01;36m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;36m", file.Name(), Reset), file.Mode().Perm().String()
 	case IsOrphanSymLink(file, file.Name()):
-		return fmt.Sprintf("%s%s%s", "\033[01;31m", file, Reset), file.Mode().Perm().String()
+		return fmt.Sprintf("%s%s%s", "\033[01;31m", file.Name(), Reset), file.Mode().Perm().String()
 	default:
 		return file.Name(), file.Mode().Perm().String()
 	}
