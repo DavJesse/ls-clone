@@ -95,7 +95,6 @@ func retrieveRootInfo(path string, includeHidden bool) []FileInfo {
 	var linkCount int
 	var userID, groupID string
 	dirInfo, err := os.Open(path)
-
 	if err != nil {
 		log.Fatal(err)
 	}
