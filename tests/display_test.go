@@ -126,7 +126,7 @@ func TestPrintShortList(t *testing.T) {
 	os.Stdout = w
 
 	// Use a fixed terminal width for the test
-	terminalWidth := 20
+	terminalWidth := 22
 	internal.PrintShortList(files, terminalWidth)
 
 	w.Close()
