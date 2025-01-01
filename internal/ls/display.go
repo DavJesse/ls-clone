@@ -60,9 +60,21 @@ func GetTerminalWidth() int {
 	return 80 // set default size to 80
 }
 
+func GetMaxLength(files []FileInfo) int {
+	max := 0
+
+	// Find file names longer than 'max', update 'ma' value
+	for _, file := range files {
+		if len(file.DocName) > max {
+			max = len(file.DocName)
+		}
+	}
+	return max
+}
+
 func PrintShortList(files []FileInfo, width int) {
 	// Establish working parameters
-	maxLength := GetMaximumLength(files)
+	maxLength := GetMaxLength(files)
 	termWidth := GetTerminalWidth()
 
 	// Determine the number of columns to print to terminal
