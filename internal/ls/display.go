@@ -59,3 +59,22 @@ func GetTerminalWidth() int {
 
 	return 80 // set default size to 80
 }
+
+func PrintShortList(files []FileInfo, width int) {
+	// Establish working parameters
+	maxLength := GetMaximumLength(files)
+	termWidth := GetTerminalWidth()
+
+	// Determine the number of columns to print to terminal
+	colums := termWidth / (maxLength + 2)
+
+	// Print files in columns
+	for i, file := range files {
+		fmt.Printf("%-*s", maxLength+2, file.DocName)
+
+		// Add new line at the end of row
+		if (i+1)%colums == 0 || i == len(files)-1 {
+			fmt.Println()
+		}
+	}
+}
