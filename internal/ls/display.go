@@ -5,11 +5,12 @@ package internal
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 )
 
 func UnravelFiles(dirName, indent string, files []FileInfo) string {
-
 	var result strings.Builder
 	result.WriteString(dirName + ":\n")
 
@@ -47,4 +48,14 @@ func LongList(files []FileInfo, metaData *MetaData) {
 	for _, file := range files {
 		fmt.Println(file.DocPerm)
 	}
+}
+
+func GetTerminalWidth() int {
+	if col, ok := os.LookupEnv("COLUMNS"); ok {
+		if width, err := strconv.Atoi(col); err == nil {
+			return width
+		}
+	}
+
+	return 80 // set default size to 80
 }
