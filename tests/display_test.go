@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"io"
+	"os"
 	"testing"
 
 	internal "my-ls/internal/ls"
@@ -106,5 +108,33 @@ func TestRemoveColor(t *testing.T) {
 			t.FailNow()
 		}
 		point++
+	}
+}
+
+func TestPrintShortList(t *testing.T) {
+	files := []internal.FileInfo{
+		{DocName: "file1.txt"},
+		{DocName: "file2.txt"},
+		{DocName: "file3.txt"},
+		{DocName: "file4.txt"},
+		{DocName: "file5.txt"},
+	}
+
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	// Use a fixed terminal width for the test
+	terminalWidth := 20
+	internal.PrintShortList(files, terminalWidth)
+
+	w.Close()
+	out, _ := io.ReadAll(r)
+	os.Stdout = oldStdout
+
+	expected := "file1.txt  file2.txt\nfile3.txt  file4.txt\nfile5.txt\n"
+	if string(out) != expected {
+		t.Errorf("PrintShortList output incorrect.\nExpected:\n%s\nGot:\n%s", expected, string(out))
 	}
 }
