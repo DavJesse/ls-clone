@@ -111,6 +111,19 @@ func TestRemoveColor(t *testing.T) {
 	}
 }
 
+func TestGetTerminalWidth_ColumnsWithSpaces(t *testing.T) {
+	// Set COLUMNS environment variable with spaces
+	os.Setenv("COLUMNS", "  100  ")
+	defer os.Unsetenv("COLUMNS")
+
+	width := internal.GetTerminalWidth()
+	expected := 100
+
+	if width != expected {
+		t.Errorf("GetTerminalWidth() = %d; want %d", width, expected)
+	}
+}
+
 func TestPrintShortList(t *testing.T) {
 	files := []internal.FileInfo{
 		{DocName: "file1.txt"},
