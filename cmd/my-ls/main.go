@@ -18,20 +18,23 @@ func main() {
 	}
 
 	files := internal.RetrieveFileInfo(path, false, false)
+	internal.PrintShortList(files, internal.GetTerminalWidth())
+	fmt.Println(internal.GetTerminalWidth())
+	fmt.Println(internal.GetMaxLength(files))
 
-	for i := range files {
-		fmt.Print("Index: ")
-		fmt.Println(files[i].Index)
-		fmt.Print("File/Dir Name: ")
-		fmt.Println(files[i].DocName)
-		fmt.Print("File/Dir Detail: ")
-		fmt.Println(files[i].DocPerm)
-		fmt.Println("Recursive List:")
-		if len(files[i].RecursiveList) > 0 {
-			fmt.Println(internal.UnravelFiles("./"+files[i].DocName, "    ", files[i].RecursiveList))
-		}
-		fmt.Println()
-		fmt.Println()
-	}
+	// for i := range files {
+	// 	fmt.Print("Index: ")
+	// 	fmt.Println(files[i].Index)
+	// 	fmt.Print("File/Dir Name: ")
+	// 	fmt.Println(files[i].DocName)
+	// 	fmt.Print("File/Dir Detail: ")
+	// 	fmt.Println(files[i].DocPerm)
+	// 	fmt.Println("Recursive List:")
+	// 	if len(files[i].RecursiveList) > 0 {
+	// 		fmt.Println(internal.UnravelFiles("./"+files[i].DocName, "    ", files[i].RecursiveList))
+	// 	}
+	// 	fmt.Println()
+	// 	fmt.Println()
+	// }
 	fmt.Println(flag)
 }
