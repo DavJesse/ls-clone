@@ -5,6 +5,7 @@ package internal
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -51,8 +52,10 @@ func LongList(files []FileInfo, metaData *MetaData) {
 }
 
 func GetTerminalWidth() int {
+	// Establish terminal width
+	// Convert result to usable integer
 	if col, ok := os.LookupEnv("COLUMNS"); ok {
-		if width, err := strconv.Atoi(col); err == nil {
+		if width, err := strconv.Atoi(strings.TrimSpace(col)); err == nil {
 			return width
 		}
 	}
