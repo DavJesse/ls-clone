@@ -18,9 +18,7 @@ func main() {
 	}
 
 	files := internal.RetrieveFileInfo(path, false, false)
-	internal.PrintShortList(files, internal.GetTerminalWidth())
-	fmt.Println(internal.GetTerminalWidth())
-	fmt.Println(internal.GetMaxLength(files))
+	internal.PrintShortList(files[1:], internal.GetTerminalWidth())
 
 	// for i := range files {
 	// 	fmt.Print("Index: ")

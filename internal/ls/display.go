@@ -77,7 +77,6 @@ func GetMaxLength(files []FileInfo) int {
 func PrintShortList(files []FileInfo, termWidth int) {
 	// Establish working parameters
 	maxLength := GetMaxLength(files)
-	// termWidth := GetTerminalWidth()
 
 	// Determine the number of columns to print to terminal
 	colums := termWidth / (maxLength + 2)
